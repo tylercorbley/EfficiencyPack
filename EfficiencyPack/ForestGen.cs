@@ -56,8 +56,6 @@ namespace EfficiencyPack
 
                 // Create random XYZ points within the polygon
                 List<XYZ> randomPoints = CreateRandomPointsWithinPolygon(curveLoop, numPoints);
-                string famFamily = "RPC Tree - Deciduous";
-                string famType = "Lombardy Poplar - 40'";
                 //transaction
                 using (Transaction t = new Transaction(doc))
                 {
@@ -68,11 +66,9 @@ namespace EfficiencyPack
                         FamilySymbol tree = GetFamilySymbolByName(doc, family, selectedTreeType);
                         tree.Activate();
                         FamilyInstance newTree = doc.Create.NewFamilyInstance(point, tree, StructuralType.NonStructural);
-                        Random rnd = new Random();
-                        double num = rnd.Next();
                         counter++;
                         //7 rotate trees randomly
-
+                        RandomlyRotateElement(newTree, point);
                         //revit family. rotate (num degrees or something)
 
                     }
@@ -82,6 +78,37 @@ namespace EfficiencyPack
             }
 
             return Result.Succeeded;
+        }
+        public void RandomlyRotateElement(Element element, XYZ point)
+        {
+            Document doc = element.Document;
+
+            // Instantiate a Random object
+            Random random = new Random();
+
+            // Get the element's location point
+            LocationPoint location = element.Location as LocationPoint;
+            if (location == null)
+            {
+                return; // Skip if the element doesn't have a valid location
+            }
+
+            XYZ origin = location.Point;
+            XYZ adder = new XYZ(0, 0, 10);
+
+            // Generate a random angle in radians
+            double angle = random.NextDouble() * 2 * Math.PI;
+
+            // Generate a random rotation axis
+            XYZ axis = new XYZ(random.NextDouble(), random.NextDouble(), random.NextDouble()).Normalize();
+
+            // Create a line for rotation axis passing through the e    lement's location
+            Line rotationAxis = Line.CreateBound(point, point + adder);
+
+            // Apply the rotation to the element's location
+            location.Rotate(rotationAxis, angle);
+
+            doc.Regenerate();
         }
         public String GetFamilyOfElementTypeByName(Document doc, string typeName)
         {
@@ -97,17 +124,28 @@ namespace EfficiencyPack
         }
         private List<string> GetAllTreeTypes(Document doc)
         {
-            List<string> treeTypes = new List<string>();
+            List<String> plantingElementTypes = new List<String>();
+
+            // Define the category of elements to filter
+            BuiltInCategory category = BuiltInCategory.OST_Planting;
+
+            // Create a filter for the specified category
+            ElementCategoryFilter categoryFilter = new ElementCategoryFilter(category);
+
+            // Create a filtered element collector with the category filter
             FilteredElementCollector collector = new FilteredElementCollector(doc);
-            collector.OfClass(typeof(ElementType));
-            foreach (ElementType elementType in collector)
+            ICollection<Element> elements = collector.WherePasses(categoryFilter).OfClass(typeof(ElementType)).ToElements();
+
+            foreach (Element element in elements)
             {
-                if (elementType.Category.Name == "Planting")
+                ElementType elementType = element as ElementType;
+                if (elementType != null)
                 {
-                    treeTypes.Add(elementType.Name);
+                    plantingElementTypes.Add(elementType.Name);
                 }
             }
-            return treeTypes;
+
+            return plantingElementTypes;
         }
         internal FamilySymbol GetFamilySymbolByName(Document doc, string famName, string fsName)
         {
