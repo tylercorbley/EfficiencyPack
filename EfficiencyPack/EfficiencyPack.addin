@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>EfficiencyPack - Forest Generator</Text>
+    <Description>Creates a random field of a specified family</Description>
+    <Assembly>EfficiencyPack.dll</Assembly>
+    <FullClassName>EfficiencyPack.ForestGen</FullClassName>
+    <ClientId>27c116f9-2985-4370-a5a1-c798aae53410</ClientId>
+    <VendorId>com.SchraderGroup</VendorId>
+    <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Text>EfficiencyPack - Command 2</Text>
+    <Description>Some description for EfficiencyPack</Description>
+    <Assembly>EfficiencyPack.dll</Assembly>
+    <FullClassName>EfficiencyPack.Command2</FullClassName>
+    <ClientId>5a784ce4-bcee-4f83-a9fe-6e572a69dc1a</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>EfficiencyPack</Name>
+    <Assembly>EfficiencyPack.dll</Assembly>
+    <FullClassName>EfficiencyPack.App</FullClassName>
+    <ClientId>4ba7b194-ada0-4c40-9a08-9cd408126b33</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+</RevitAddIns>
