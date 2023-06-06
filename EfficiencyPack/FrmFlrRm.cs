@@ -25,11 +25,30 @@ namespace EfficiencyPack
         {
             this.Close();
         }
+        public double GetFloorHeight()
+        {
+            double returnValue;
+            if (double.TryParse(tbxNumber.Text, out returnValue) == true)
+            {
+                return (returnValue / 12);
+            }
+            return .25 / 12;
+        }
         public string GetSelectedFloorType()
         {
             return cmbType.SelectedItem.ToString();
         }
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbxNumber_TextChanged(object sender, EventArgs e)
         {
 
         }

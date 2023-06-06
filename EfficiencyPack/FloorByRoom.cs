@@ -41,13 +41,14 @@ namespace EfficiencyPack
                     }
                 }
                 FrmFlrRm formFloorRoom = new FrmFlrRm(floorTypeNames);
-                formFloorRoom.Height = 150;
-                formFloorRoom.Width = 250;
+                formFloorRoom.Height = 250;
+                formFloorRoom.Width = 350;
                 formFloorRoom.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
                 int counter = 0;
                 if (formFloorRoom.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     string selectedFloorType = formFloorRoom.GetSelectedFloorType();
+                    double raiseHeight = formFloorRoom.GetFloorHeight();
                     // Create floors based on the outline of each selected room
                     using (Transaction t = new Transaction(doc, "Create Floors"))
                     {
@@ -76,6 +77,7 @@ namespace EfficiencyPack
 
                                     // Create floors based on the room outline and floor type
                                     Floor floor = doc.Create.NewFloor(curveArray, doc.GetElement(selectedFloorTypeId) as FloorType, roomLevel, false);
+                                    RaiseFloor(floor, raiseHeight);
                                     counter++;
                                 }
                             }
@@ -94,6 +96,19 @@ namespace EfficiencyPack
                 return Result.Failed;
             }
         }
+        private void RaiseFloor(Floor floor, double height)
+        {
+            Parameter heightOffsetParam = floor.get_Parameter(BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM);
+
+            if (heightOffsetParam != null && heightOffsetParam.StorageType == StorageType.Double)
+            {
+                double currentHeightOffset = heightOffsetParam.AsDouble();
+                double newHeightOffset = currentHeightOffset + height;
+
+                heightOffsetParam.Set(newHeightOffset);
+            }
+        }
+
         private List<string> CollectFloorTypeNames(Document doc)
         {
             // Collect all the floor types in the document

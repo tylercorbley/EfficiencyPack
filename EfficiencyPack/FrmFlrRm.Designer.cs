@@ -32,6 +32,8 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.cmbType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.tbxNumber = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -73,11 +75,32 @@
             this.label2.Text = "What floor type do you want?";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
+            // tbxNumber
+            // 
+            this.tbxNumber.Location = new System.Drawing.Point(162, 49);
+            this.tbxNumber.Name = "tbxNumber";
+            this.tbxNumber.Size = new System.Drawing.Size(121, 20);
+            this.tbxNumber.TabIndex = 9;
+            this.tbxNumber.Text = "1/4\"";
+            this.tbxNumber.TextChanged += new System.EventHandler(this.tbxNumber_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(159, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(67, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Floor Offset?";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // FrmFlrRm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(321, 163);
+            this.Controls.Add(this.tbxNumber);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.cmbType);
@@ -95,5 +118,7 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.ComboBox cmbType;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox tbxNumber;
+        private System.Windows.Forms.Label label1;
     }
 }
