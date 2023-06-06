@@ -10,20 +10,20 @@
     <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
   </AddIn>
   <AddIn Type="Command">
-    <Text>EfficiencyPack - Command 2</Text>
-    <Description>Some description for EfficiencyPack</Description>
+    <Text>EfficiencyPack - Floor by room</Text>
+    <Description>Places a floor in each selected room</Description>
     <Assembly>EfficiencyPack.dll</Assembly>
     <FullClassName>EfficiencyPack.Command2</FullClassName>
     <ClientId>5a784ce4-bcee-4f83-a9fe-6e572a69dc1a</ClientId>
-    <VendorId>com.YOUR COMPANY NAME</VendorId>
-    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+    <VendorId>com.SchraderGroup</VendorId>
+    <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
   </AddIn>
   <AddIn Type="Application">
     <Name>EfficiencyPack</Name>
     <Assembly>EfficiencyPack.dll</Assembly>
     <FullClassName>EfficiencyPack.App</FullClassName>
     <ClientId>4ba7b194-ada0-4c40-9a08-9cd408126b33</ClientId>
-    <VendorId>com.YOUR COMPANY NAME</VendorId>
-    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+    <VendorId>com.SchraderGroup</VendorId>
+    <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
   </AddIn>
 </RevitAddIns>

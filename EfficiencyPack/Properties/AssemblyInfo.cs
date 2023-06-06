@@ -1,16 +1,15 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("EfficiencyPack")]
-[assembly: AssemblyDescription("Revit Add-In Description for EfficiencyPack")]
+[assembly: AssemblyDescription("A group of useful tools to save time and energy")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("YOUR COMPANY NAME")]
+[assembly: AssemblyCompany("SchraderGroup")]
 [assembly: AssemblyProduct("EfficiencyPack Revit C# .NET Add-In")]
-[assembly: AssemblyCopyright("Copyright (C) 2023 by YOUR NAME, YOUR COMPANY")]
+[assembly: AssemblyCopyright("Copyright (C) 2023 by Tyler Corbley, SchraderGroup")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
