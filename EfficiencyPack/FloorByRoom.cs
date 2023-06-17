@@ -42,7 +42,7 @@ namespace EfficiencyPack
                 }
                 FrmFlrRm formFloorRoom = new FrmFlrRm(floorTypeNames);
                 formFloorRoom.Height = 250;
-                formFloorRoom.Width = 350;
+                formFloorRoom.Width = 550;
                 formFloorRoom.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
                 int counter = 0;
                 if (formFloorRoom.ShowDialog() == System.Windows.Forms.DialogResult.OK)

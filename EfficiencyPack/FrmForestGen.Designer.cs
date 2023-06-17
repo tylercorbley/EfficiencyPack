@@ -60,7 +60,7 @@
             this.cmbType.FormattingEnabled = true;
             this.cmbType.Location = new System.Drawing.Point(12, 90);
             this.cmbType.Name = "cmbType";
-            this.cmbType.Size = new System.Drawing.Size(121, 21);
+            this.cmbType.Size = new System.Drawing.Size(271, 21);
             this.cmbType.TabIndex = 1;
             this.cmbType.Text = "Type";
             // 

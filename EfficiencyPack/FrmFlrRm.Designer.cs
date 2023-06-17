@@ -39,9 +39,9 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(162, 107);
+            this.btnCancel.Location = new System.Drawing.Point(402, 107);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(121, 23);
+            this.btnCancel.Size = new System.Drawing.Size(125, 23);
             this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -61,7 +61,7 @@
             this.cmbType.FormattingEnabled = true;
             this.cmbType.Location = new System.Drawing.Point(12, 48);
             this.cmbType.Name = "cmbType";
-            this.cmbType.Size = new System.Drawing.Size(121, 21);
+            this.cmbType.Size = new System.Drawing.Size(384, 21);
             this.cmbType.TabIndex = 5;
             this.cmbType.Text = "Type";
             // 
@@ -77,9 +77,9 @@
             // 
             // tbxNumber
             // 
-            this.tbxNumber.Location = new System.Drawing.Point(162, 49);
+            this.tbxNumber.Location = new System.Drawing.Point(402, 49);
             this.tbxNumber.Name = "tbxNumber";
-            this.tbxNumber.Size = new System.Drawing.Size(121, 20);
+            this.tbxNumber.Size = new System.Drawing.Size(125, 20);
             this.tbxNumber.TabIndex = 9;
             this.tbxNumber.Text = "1/4\"";
             this.tbxNumber.TextChanged += new System.EventHandler(this.tbxNumber_TextChanged);
@@ -87,7 +87,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(159, 23);
+            this.label1.Location = new System.Drawing.Point(399, 23);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(67, 13);
             this.label1.TabIndex = 8;
@@ -98,7 +98,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(321, 163);
+            this.ClientSize = new System.Drawing.Size(539, 163);
             this.Controls.Add(this.tbxNumber);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCancel);

@@ -1,11 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
+	<AddIn Type="Command">
+		<Text>Toggle Room Tag Leader</Text>
+		<Description>Toggles room tag leaders. You can hotkey this tool, which you can't do in revit without this.</Description>
+		<Assembly>EfficiencyPack.dll</Assembly>
+		<FullClassName>EfficiencyPack.ToggleRoomTagLeader</FullClassName>
+		<ClientId>49AE01C5-727F-4434-AD13-E3A361D48906</ClientId>
+		<VendorId>com.sgarc</VendorId>
+		<VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
+	</AddIn>
   <AddIn Type="Application">
     <Name>EfficiencyPack</Name>
     <Assembly>EfficiencyPack.dll</Assembly>
     <FullClassName>EfficiencyPack.App</FullClassName>
     <ClientId>4ba7b194-ada0-4c40-9a08-9cd408126b33</ClientId>
-    <VendorId>com.SchraderGroup</VendorId>
+    <VendorId>com.sgarc</VendorId>
     <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
   </AddIn>
 </RevitAddIns>
