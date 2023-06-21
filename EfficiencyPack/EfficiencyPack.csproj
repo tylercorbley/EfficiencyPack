@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="DuplicateSheet.cs" />
+    <Compile Include="FloorByDepartment.cs" />
     <Compile Include="ToggleRoomTagLeader.cs" />
     <Compile Include="FrmFlrRm.cs">
       <SubType>Form</SubType>

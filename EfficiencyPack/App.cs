@@ -29,10 +29,12 @@ namespace EfficiencyPack
             ButtonDataClass myButtonData1 = new ButtonDataClass("ForestGen", "Forest Generator", ForestGen.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Draw detail lines into a polygonal shape for your trees to be placed inside. Follow the command prompts to define amount and type.");
             ButtonDataClass myButtonData2 = new ButtonDataClass("FloorByRoom", "Floors by Rooms", FloorByRoom.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Run command and follow prompt to select type of floor to populate.");
             ButtonDataClass myButtonData3 = new ButtonDataClass("DuplicateSheet", "Duplicate Sheet", DuplicateViewsCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select Sheet. Run command.");
+            ButtonDataClass myButtonData4 = new ButtonDataClass("FloorByDepartment", "Floors by Department", FloorByDepartment.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Run command. Get Floors.");
 
             // 4. Create buttons
             PushButton myButton1 = panel000.AddItem(myButtonData1.Data) as PushButton;
             PushButton myButton3 = panel000.AddItem(myButtonData3.Data) as PushButton;
+            PushButton myButton4 = panel000.AddItem(myButtonData4.Data) as PushButton;
             PushButton myButton2 = panel900.AddItem(myButtonData2.Data) as PushButton;
 
             // NOTE:
