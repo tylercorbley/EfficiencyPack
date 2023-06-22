@@ -63,6 +63,13 @@
     <Compile Include="App.cs" />
     <Compile Include="DuplicateSheet.cs" />
     <Compile Include="FloorByDepartment.cs" />
+    <Compile Include="FrmDtlLn.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDtlLn.Designer.cs">
+      <DependentUpon>FrmDtlLn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LinesByRoom.cs" />
     <Compile Include="ToggleRoomTagLeader.cs" />
     <Compile Include="FrmFlrRm.cs">
       <SubType>Form</SubType>
@@ -89,6 +96,9 @@
     <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FrmDtlLn.resx">
+      <DependentUpon>FrmDtlLn.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmFlrRm.resx">
       <DependentUpon>FrmFlrRm.cs</DependentUpon>
     </EmbeddedResource>
