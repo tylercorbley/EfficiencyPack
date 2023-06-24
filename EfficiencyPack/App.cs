@@ -23,6 +23,7 @@ namespace EfficiencyPack
 
             // 2. Create ribbon panel 
             RibbonPanel panel000 = Utils.CreateRibbonPanel(app, "Efficiency Pack", "000 - Misc");
+            RibbonPanel panel800 = Utils.CreateRibbonPanel(app, "Efficiency Pack", "800 - Enlarged Drawings");
             RibbonPanel panel900 = Utils.CreateRibbonPanel(app, "Efficiency Pack", "900 - Finishes");
 
             // 3. Create button data instances
@@ -31,12 +32,14 @@ namespace EfficiencyPack
             ButtonDataClass myButtonData3 = new ButtonDataClass("DuplicateSheet", "Duplicate \rSheet", DuplicateViewsCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select Sheet. Run command.");
             ButtonDataClass myButtonData4 = new ButtonDataClass("FloorByDepartment", "Floors by \rDepartment", FloorByDepartment.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Run command. Get Floors.");
             ButtonDataClass myButtonData5 = new ButtonDataClass("LinesByRoom", "Lines by \rRoom", LinesByRoom.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Run command. Get Outline.");
+            ButtonDataClass myButtonData6 = new ButtonDataClass("RoomPlanGen", "Plans by \rRoom", RoomPlanGen.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Run command. Get Plans.");
 
             // 4. Create buttons
             PushButton myButton1 = panel000.AddItem(myButtonData1.Data) as PushButton;
             PushButton myButton3 = panel000.AddItem(myButtonData3.Data) as PushButton;
             PushButton myButton4 = panel000.AddItem(myButtonData4.Data) as PushButton;
             PushButton myButton5 = panel000.AddItem(myButtonData5.Data) as PushButton;
+            PushButton myButton6 = panel800.AddItem(myButtonData6.Data) as PushButton;
             PushButton myButton2 = panel900.AddItem(myButtonData2.Data) as PushButton;
 
             // NOTE:
