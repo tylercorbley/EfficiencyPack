@@ -61,8 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="CenterRoomTag.cs" />
     <Compile Include="DuplicateSheet.cs" />
     <Compile Include="FloorByDepartment.cs" />
+    <Compile Include="CenterRoom.cs" />
     <Compile Include="FrmRmPlan.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -31,16 +31,36 @@ namespace EfficiencyPack
             }
             // Retrieve the list of view template names
             List<string> viewTemplateNames = GetAllViewTemplateNames(doc);
-
+            // 8. get view family types
+            FilteredElementCollector vftCollector = new FilteredElementCollector(doc);
+            vftCollector.OfClass(typeof(ViewFamilyType));
+            ViewFamilyType fpVFT = null;
+            ViewFamilyType cpVFT = null;
+            List<string> vftNames = new List<String>();
+            foreach (ViewFamilyType curVFT in vftCollector)
+            {
+                vftNames.Add(curVFT.Name);
+            }
             FrmRmPlan formRoomPlan = new FrmRmPlan(viewTemplateNames);
             formRoomPlan.Height = 200;
             formRoomPlan.Width = 500;
             formRoomPlan.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             int counter = 0;
             double offset = 2.0;
+            foreach (ViewFamilyType curVFT in vftCollector)
+            {
+                if (curVFT.ViewFamily == ViewFamily.FloorPlan)
+                {
+                    fpVFT = curVFT;
+                }
+                else if (curVFT.ViewFamily == ViewFamily.CeilingPlan)
+                {
+                    cpVFT = curVFT;
+                }
+            }
             if (formRoomPlan.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                using (Transaction transaction = new Transaction(doc, "Set View Template"))
+                using (Transaction transaction = new Transaction(doc, "Create Plans"))
                 {
                     transaction.Start();
                     // Iterate through selected rooms
@@ -48,10 +68,19 @@ namespace EfficiencyPack
                     {
                         // Set the view template and view type for the plan view
                         string viewTypeName = formRoomPlan.GetSelectedViewType();
+                        bool planOrRCP = formRoomPlan.PlanOrRCP();
                         ElementId viewTypeID = GetViewTemplateIdByName(doc, viewTypeName);
-
+                        ViewFamilyType curVFT = null;
+                        if (planOrRCP)
+                        {
+                            curVFT = fpVFT;
+                        }
+                        else
+                        {
+                            curVFT = cpVFT;
+                        }
                         // Create a plan view
-                        ViewPlan planView = CreatePlanViewWithCrop(doc, viewTypeID, room, offset);
+                        ViewPlan planView = CreatePlanViewWithCrop(doc, viewTypeID, room, offset, curVFT);
                         // Crop the plan view to the room boundary
                         //CropViewToRoom(doc, planView, room);
 
@@ -135,7 +164,7 @@ namespace EfficiencyPack
 
             return selectedRooms;
         }
-        private ViewPlan CreatePlanViewWithCrop(Document doc, ElementId viewTemplateId, Room room, double offset)
+        private ViewPlan CreatePlanViewWithCrop(Document doc, ElementId viewTemplateId, Room room, double offset, ViewFamilyType curVFT)
         {
             // Create a new plan view
             ViewPlan planView = null;
@@ -157,8 +186,7 @@ namespace EfficiencyPack
 
             if (floorPlanTypeId != null)
             {
-                // Create the plan view
-                planView = ViewPlan.Create(doc, floorPlanTypeId, room.LevelId);
+                planView = ViewPlan.Create(doc, curVFT.Id, room.LevelId);
                 planView.Name = room.Name + " Plan";
 
                 // Apply the view template to the plan view
@@ -176,8 +204,6 @@ namespace EfficiencyPack
 
             return planView;
         }
-
-
         private ElementId GetViewFamilyTypeIdByName(Document doc, string viewFamilyName)
         {
             FilteredElementCollector viewFamilyCollector = new FilteredElementCollector(doc);
@@ -266,6 +292,5 @@ namespace EfficiencyPack
 
             return false;
         }
-
     }
 }

@@ -32,12 +32,13 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.cmbType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(271, 96);
+            this.btnCancel.Location = new System.Drawing.Point(271, 124);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(125, 23);
             this.btnCancel.TabIndex = 16;
@@ -47,7 +48,7 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(15, 96);
+            this.btnOK.Location = new System.Drawing.Point(15, 124);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(121, 23);
             this.btnOK.TabIndex = 17;
@@ -73,11 +74,24 @@
             this.label2.TabIndex = 14;
             this.label2.Text = "What plan type do you want?";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(12, 81);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(184, 17);
+            this.checkBox1.TabIndex = 19;
+            this.checkBox1.Text = "Check for Plan, uncheck for RCP";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // FrmRmPlan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(445, 159);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.cmbType);
@@ -95,5 +109,6 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.ComboBox cmbType;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

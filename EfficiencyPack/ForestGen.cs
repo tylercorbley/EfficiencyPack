@@ -182,7 +182,6 @@ namespace EfficiencyPack
 
             return curves;
         }
-
         private CurveLoop CreateClosedPolygon(List<Curve> curves)
         {
             // Check if the curves form a closed loop
@@ -230,7 +229,6 @@ namespace EfficiencyPack
 
             return foundClosedLoop ? CurveLoop.Create(closedCurves) : null;
         }
-
         private List<XYZ> CreateRandomPointsWithinPolygon(CurveLoop polygon, int numPoints)
         {
             List<XYZ> randomPoints = new List<XYZ>();
