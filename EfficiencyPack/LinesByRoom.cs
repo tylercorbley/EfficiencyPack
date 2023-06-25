@@ -150,7 +150,6 @@ namespace EfficiencyPack
 
             return results;
         }
-
         public View GetActiveView(Autodesk.Revit.DB.Document document)
         {
             // Get the active view

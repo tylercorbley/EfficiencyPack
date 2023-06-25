@@ -35,12 +35,14 @@ namespace EfficiencyPack
             ButtonDataClass myButtonData6 = new ButtonDataClass("RoomPlanGen", "Plans by \rRoom", RoomPlanGen.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Run command. Get Plans.");
             ButtonDataClass myButtonData7 = new ButtonDataClass("CenterRoom", "Center\rRoom", RoomTagCenteringCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Center rooms.");
             ButtonDataClass myButtonData8 = new ButtonDataClass("CenterRoomTag", "Center\rRoom tag", RoomTagCenteringCommandTag.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Center tags.");
+            ButtonDataClass myButtonData9 = new ButtonDataClass("RenameView", "Rename\rView", RenameView.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select room. Rename View.");
 
             // 4. Create buttons
             PushButton myButton1 = panel000.AddItem(myButtonData1.Data) as PushButton;
             PushButton myButton3 = panel000.AddItem(myButtonData3.Data) as PushButton;
             PushButton myButton4 = panel000.AddItem(myButtonData4.Data) as PushButton;
             PushButton myButton5 = panel000.AddItem(myButtonData5.Data) as PushButton;
+            PushButton myButton9 = panel000.AddItem(myButtonData9.Data) as PushButton;
             PushButton myButton6 = panel800.AddItem(myButtonData6.Data) as PushButton;
             PushButton myButton2 = panel900.AddItem(myButtonData2.Data) as PushButton;
             //5. Split buttons

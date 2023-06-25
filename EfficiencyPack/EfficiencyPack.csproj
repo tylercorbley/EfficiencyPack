@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="RenameView.cs" />
     <Compile Include="CenterRoomTag.cs" />
     <Compile Include="DuplicateSheet.cs" />
     <Compile Include="FloorByDepartment.cs" />
