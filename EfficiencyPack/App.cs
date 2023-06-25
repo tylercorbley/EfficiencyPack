@@ -23,6 +23,7 @@ namespace EfficiencyPack
 
             // 2. Create ribbon panel 
             RibbonPanel panel000 = Utils.CreateRibbonPanel(app, "Efficiency Pack", "000 - Misc");
+            RibbonPanel panel600 = Utils.CreateRibbonPanel(app, "Efficiency Pack", "600 - Doors");
             RibbonPanel panel800 = Utils.CreateRibbonPanel(app, "Efficiency Pack", "800 - Enlarged Drawings");
             RibbonPanel panel900 = Utils.CreateRibbonPanel(app, "Efficiency Pack", "900 - Finishes");
 
@@ -36,6 +37,8 @@ namespace EfficiencyPack
             ButtonDataClass myButtonData7 = new ButtonDataClass("CenterRoom", "Center\rRoom", RoomTagCenteringCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Center rooms.");
             ButtonDataClass myButtonData8 = new ButtonDataClass("CenterRoomTag", "Center\rRoom tag", RoomTagCenteringCommandTag.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms. Center tags.");
             ButtonDataClass myButtonData9 = new ButtonDataClass("RenameView", "Rename\rView", RenameView.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select room. Rename View.");
+            ButtonDataClass myButtonData10 = new ButtonDataClass("DoorFireRating", "Door Fire\rRating", DoorFireRating.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select doors to set their fire rating.");
+            ButtonDataClass myButtonData11 = new ButtonDataClass("DoorCMU/GWB", "Door Inset\rOr Wrapped", DoorFireRating.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select doors to set whether they are inset or wrapped.");
 
             // 4. Create buttons
             PushButton myButton1 = panel000.AddItem(myButtonData1.Data) as PushButton;
@@ -47,9 +50,14 @@ namespace EfficiencyPack
             PushButton myButton2 = panel900.AddItem(myButtonData2.Data) as PushButton;
             //5. Split buttons
             SplitButtonData splitButtonData = new SplitButtonData("Center Room", "Center\rRoom");
+            SplitButtonData splitButtonData2 = new SplitButtonData("Door Modifiers", "Door\rModifier");
             SplitButton splitButton = panel000.AddItem(splitButtonData) as SplitButton;
             splitButton.AddPushButton(myButtonData7.Data);
             splitButton.AddPushButton(myButtonData8.Data);
+            SplitButton splitButton2 = panel600.AddItem(splitButtonData2) as SplitButton;
+            splitButton2.AddPushButton(myButtonData10.Data);
+            splitButton2.AddPushButton(myButtonData11.Data);//placeholder for masonry/gyp
+
 
             // NOTE:
             // To create a new tool, copy lines 35 and 39 and rename the variables to "myButtonData3" and "myButton3". 
