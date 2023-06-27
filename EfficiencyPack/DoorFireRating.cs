@@ -78,7 +78,7 @@ namespace EfficiencyPack
             var method = MethodBase.GetCurrentMethod().DeclaringType?.FullName;
             return method;
         }
-        private Wall GetDoorHostWall(Document doc, Element door)
+        public Wall GetDoorHostWall(Document doc, Element door)
         {
             // Check if the door is a FamilyInstance
             if (door is FamilyInstance doorInstance)
