@@ -40,6 +40,9 @@ namespace EfficiencyPack
             ButtonDataClass myButtonData10 = new ButtonDataClass("DoorFireRating", "Door Fire\rRating", DoorFireRating.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select doors to set their fire rating.");
             ButtonDataClass myButtonData11 = new ButtonDataClass("DoorCMU/GWB", "Door Inset\rOr Wrapped", DoorInsetWrap.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select doors to set whether they are inset or wrapped.");
             ButtonDataClass myButtonData12 = new ButtonDataClass("DoorStorefrontMark", "Door Storefront\rMark", DoorStorefrontMark.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select storefront or curtainwall doors. Get mark based on the storefront mark.");
+            ButtonDataClass myButtonData13 = new ButtonDataClass("StorefrontElevation", "Make Storefront\rElevations", CurtainWallElevationAddIn.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select storefront or curtainwall to create elevations of them.");
+            ButtonDataClass myButtonData14 = new ButtonDataClass("InteriorElevation", "Make Interior\rElevations", InteriorElevation.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms to elevate.");
+            ButtonDataClass myButtonData15 = new ButtonDataClass("FamilySizes", "Get family\rsizes in model", FamilyFileSizeReporter.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Get sizes of all families in model.");
 
             // 4. Create buttons
             PushButton myButton1 = panel000.AddItem(myButtonData1.Data) as PushButton;
@@ -47,8 +50,10 @@ namespace EfficiencyPack
             PushButton myButton4 = panel000.AddItem(myButtonData4.Data) as PushButton;
             PushButton myButton5 = panel000.AddItem(myButtonData5.Data) as PushButton;
             PushButton myButton9 = panel000.AddItem(myButtonData9.Data) as PushButton;
+            PushButton mybutton12 = panel600.AddItem(myButtonData13.Data) as PushButton;
             PushButton myButton6 = panel800.AddItem(myButtonData6.Data) as PushButton;
             PushButton myButton2 = panel900.AddItem(myButtonData2.Data) as PushButton;
+            PushButton myButton10 = panel800.AddItem(myButtonData14.Data) as PushButton;
             //5. Split buttons
             SplitButtonData splitButtonData = new SplitButtonData("Center Room", "Center\rRoom");
             SplitButtonData splitButtonData2 = new SplitButtonData("Door Modifiers", "Door\rModifier");
@@ -60,6 +65,7 @@ namespace EfficiencyPack
             splitButton2.AddPushButton(myButtonData11.Data);
             splitButton2.AddPushButton(myButtonData12.Data);
 
+            //PushButton myButton11 = panel000.AddItem(myButtonData15.Data) as PushButton;
 
             // NOTE:
             // To create a new tool, copy lines 35 and 39 and rename the variables to "myButtonData3" and "myButton3". 

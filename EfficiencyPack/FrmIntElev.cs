@@ -4,9 +4,9 @@ using System.Windows.Forms;
 
 namespace EfficiencyPack
 {
-    public partial class FrmRmPlan : Form
+    public partial class FrmIntElev : Form
     {
-        public FrmRmPlan(List<String> viewTypes)
+        public FrmIntElev(List<String> viewTypes)
         {
             InitializeComponent();
             foreach (String type in viewTypes)
@@ -34,16 +34,11 @@ namespace EfficiencyPack
             return cmbType.SelectedItem.ToString();
         }
 
-        //public bool PlanOrRCP()
-        //{
-        //    return checkBox1.Checked;
-        //}
         private void label1_Click(object sender, EventArgs e)
         {
 
         }
-
-        private void btnOK_Click_1(object sender, EventArgs e)
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }

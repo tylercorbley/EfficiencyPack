@@ -38,12 +38,13 @@ namespace EfficiencyPack
 
                     // Generate the new view name
                     string viewName = $"{room.Level.Name} - {room.Number} - {roomName}";
+                    string newName_2 = GetUniqueViewName(doc, viewName);
 
                     // Set the view name
                     using (Transaction trans = new Transaction(doc, "Rename View"))
                     {
                         trans.Start();
-                        view.Name = viewName;
+                        view.Name = newName_2;
                         trans.Commit();
                     }
 
@@ -76,7 +77,38 @@ namespace EfficiencyPack
 
             return roomName;
         }
+        private string GetUniqueViewName(Document doc, string viewName)
+        {
+            string uniqueName = viewName;
+            int counter = 1;
+
+            while (IsViewNameExists(doc, uniqueName))
+            {
+                uniqueName = $"{viewName} {counter}";
+                counter++;
+            }
+
+            return uniqueName;
+        }
+        private bool IsViewNameExists(Document doc, string viewName)
+        {
+            FilteredElementCollector viewCollector = new FilteredElementCollector(doc)
+                .OfClass(typeof(View));
+
+            foreach (Element viewElem in viewCollector)
+            {
+                View view = viewElem as View;
+                if (view != null && view.Name.Equals(viewName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
+
     // Filter class for room selection
     public class RoomSelectionFilter : ISelectionFilter
     {
