@@ -43,6 +43,8 @@ namespace EfficiencyPack
             ButtonDataClass myButtonData13 = new ButtonDataClass("StorefrontElevation", "Make Storefront\rElevations", CurtainWallElevationAddIn.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select storefront or curtainwall to create elevations of them.");
             ButtonDataClass myButtonData14 = new ButtonDataClass("InteriorElevation", "Make Interior\rElevations", InteriorElevation.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select rooms to elevate.");
             ButtonDataClass myButtonData15 = new ButtonDataClass("FamilySizes", "Get family\rsizes in model", FamilyFileSizeReporter.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Get sizes of all families in model.");
+            ButtonDataClass myButtonData16 = new ButtonDataClass("ModifyCropBoundaryCommand", "Raise Crop\rBoundary", ModifyCropBoundaryCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Raises the crop boundary of selected views");
+            ButtonDataClass myButtonData17 = new ButtonDataClass("FilledRegionDonut", "Create\rDonut", CreateFilledRegionCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select views. Get Donuts.");
 
             // 4. Create buttons
             PushButton myButton1 = panel000.AddItem(myButtonData1.Data) as PushButton;
@@ -56,10 +58,14 @@ namespace EfficiencyPack
             PushButton myButton10 = panel800.AddItem(myButtonData14.Data) as PushButton;
             //5. Split buttons
             SplitButtonData splitButtonData = new SplitButtonData("Center Room", "Center\rRoom");
-            SplitButtonData splitButtonData2 = new SplitButtonData("Door Modifiers", "Door\rModifier");
             SplitButton splitButton = panel000.AddItem(splitButtonData) as SplitButton;
             splitButton.AddPushButton(myButtonData7.Data);
             splitButton.AddPushButton(myButtonData8.Data);
+            SplitButtonData splitButtonData3 = new SplitButtonData("View Modifiers", "View\rModifier");
+            SplitButton splitButton3 = panel000.AddItem(splitButtonData3) as SplitButton;
+            splitButton3.AddPushButton(myButtonData16.Data);
+            splitButton3.AddPushButton(myButtonData17.Data);
+            SplitButtonData splitButtonData2 = new SplitButtonData("Door Modifiers", "Door\rModifier");
             SplitButton splitButton2 = panel600.AddItem(splitButtonData2) as SplitButton;
             splitButton2.AddPushButton(myButtonData10.Data);
             splitButton2.AddPushButton(myButtonData11.Data);
