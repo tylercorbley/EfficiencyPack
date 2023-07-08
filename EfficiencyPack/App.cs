@@ -45,6 +45,7 @@ namespace EfficiencyPack
             ButtonDataClass myButtonData15 = new ButtonDataClass("FamilySizes", "Get family\rsizes in model", FamilyFileSizeReporter.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Get sizes of all families in model.");
             ButtonDataClass myButtonData16 = new ButtonDataClass("ModifyCropBoundaryCommand", "Raise Crop\rBoundary", ModifyCropBoundaryCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Raises the crop boundary of selected views");
             ButtonDataClass myButtonData17 = new ButtonDataClass("FilledRegionDonut", "Create\rDonut", CreateFilledRegionCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select views. Get Donuts.");
+            ButtonDataClass myButtonData18 = new ButtonDataClass("SetTypeImageCommand", "Set new\rType Image", SetTypeImageCommand.GetMethod(), Properties.Resources.Blue_32, Properties.Resources.Blue_16, "Select Family. Input Type Image.");
 
             // 4. Create buttons
             PushButton myButton1 = panel000.AddItem(myButtonData1.Data) as PushButton;
@@ -52,6 +53,7 @@ namespace EfficiencyPack
             PushButton myButton4 = panel000.AddItem(myButtonData4.Data) as PushButton;
             PushButton myButton5 = panel000.AddItem(myButtonData5.Data) as PushButton;
             PushButton myButton9 = panel000.AddItem(myButtonData9.Data) as PushButton;
+            PushButton myButton11 = panel000.AddItem(myButtonData18.Data) as PushButton;
             PushButton mybutton12 = panel600.AddItem(myButtonData13.Data) as PushButton;
             PushButton myButton6 = panel800.AddItem(myButtonData6.Data) as PushButton;
             PushButton myButton2 = panel900.AddItem(myButtonData2.Data) as PushButton;

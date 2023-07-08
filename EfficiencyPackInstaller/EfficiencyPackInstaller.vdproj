@@ -2366,6 +2366,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -2390,6 +2398,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -4358,15 +4374,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:EfficiencyPackInstaller"
-        "ProductCode" = "8:{9B1C0C50-7CFD-4D61-BDE6-DD3FB51142CC}"
-        "PackageCode" = "8:{8618B0CB-C228-47D5-905E-D59BC32AAED7}"
-        "UpgradeCode" = "8:{1CABDF00-31A2-4B5F-9F41-409AED433077}"
+        "ProductCode" = "8:{A2315471-6ACB-434B-BE40-94FA375BB3DD}"
+        "PackageCode" = "8:{3606FCE5-8DB2-4579-8473-60C7E9FEE527}"
+        "UpgradeCode" = "8:{745D79C1-62C2-408D-93C4-32F96DEA1F56}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.7.0"
+        "ProductVersion" = "8:1.0.0"
         "Manufacturer" = "8:SchraderGroup"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -4880,7 +4896,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C8F3867D8D584CBA808774505E7ABA7B"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\EfficiencyPack\\obj\\Release\\EfficiencyPack.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFDD831C62D3482BA47E4516E89F49CD"

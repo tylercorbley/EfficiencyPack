@@ -20,12 +20,8 @@ namespace EfficiencyPack
             // this is a variable for the Revit application
             UIApplication uiapp = commandData.Application;
             // this is a variable for the current Revit model
-            //Document doc = uiapp.ActiveUIDocument.Document;
-            //1 create pick list
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
-            // UIDocument uidoc = uiapp.ActiveUIDocument;
-            //IList<Element> pickList = uidoc.Selection.PickElementsByRectangle("Select Boundary Lines");
             // Get the array of curves (e.g., from user selection)
             List<Curve> curves = GetCurvesFromSelection(uidoc);
 
@@ -43,38 +39,46 @@ namespace EfficiencyPack
 
             //5 get tree family
             List<string> treeType = GetAllTreeTypes(doc);
-            FrmForestGen forestGen = new FrmForestGen(treeType);
-            forestGen.Height = 250;
-            forestGen.Width = 350;
-            forestGen.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            int counter = 0;
-            if (forestGen.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (treeType.Count > 0)
             {
-                string selectedTreeType = forestGen.GetSelectedTreeType();
-                String family = GetFamilyOfElementTypeByName(doc, selectedTreeType);
-                numPoints = forestGen.HowManyTrees();
 
-                // Create random XYZ points within the polygon
-                List<XYZ> randomPoints = CreateRandomPointsWithinPolygon(curveLoop, numPoints);
-                //transaction
-                using (Transaction t = new Transaction(doc))
+                FrmForestGen forestGen = new FrmForestGen(treeType);
+                forestGen.Height = 250;
+                forestGen.Width = 350;
+                forestGen.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+                int counter = 0;
+                if (forestGen.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    t.Start("Create Random Forest");
-                    // Create point elements at the random XYZ positions
-                    foreach (XYZ point in randomPoints)
-                    {
-                        FamilySymbol tree = GetFamilySymbolByName(doc, family, selectedTreeType);
-                        tree.Activate();
-                        FamilyInstance newTree = doc.Create.NewFamilyInstance(point, tree, StructuralType.NonStructural);
-                        counter++;
-                        //7 rotate trees randomly
-                        RandomlyRotateElement(newTree, point);
-                        //revit family. rotate (num degrees or something)
+                    string selectedTreeType = forestGen.GetSelectedTreeType();
+                    String family = GetFamilyOfElementTypeByName(doc, selectedTreeType);
+                    numPoints = forestGen.HowManyTrees();
 
+                    // Create random XYZ points within the polygon
+                    List<XYZ> randomPoints = CreateRandomPointsWithinPolygon(curveLoop, numPoints);
+                    //transaction
+                    using (Transaction t = new Transaction(doc))
+                    {
+                        t.Start("Create Random Forest");
+                        // Create point elements at the random XYZ positions
+                        foreach (XYZ point in randomPoints)
+                        {
+                            FamilySymbol tree = GetFamilySymbolByName(doc, family, selectedTreeType);
+                            tree.Activate();
+                            FamilyInstance newTree = doc.Create.NewFamilyInstance(point, tree, StructuralType.NonStructural);
+                            counter++;
+                            //7 rotate trees randomly
+                            RandomlyRotateElement(newTree, point);
+                            //revit family. rotate (num degrees or something)
+
+                        }
+                        t.Commit();
                     }
-                    t.Commit();
+                    TaskDialog.Show("OK!", $"You Created {counter} Trees!");
                 }
-                TaskDialog.Show("OK!", $"You Created {counter} Trees!");
+            }
+            else
+            {
+                TaskDialog.Show("OOPS!", $"No planting types in the model. Please add some first.");
             }
 
             return Result.Succeeded;

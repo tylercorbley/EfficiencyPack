@@ -43,6 +43,7 @@
     <Reference Include="ArchSmarterUtils_2022">
       <HintPath>..\..\ArchSmarterUtils\ArchSmarterUtils_2022\bin\Debug\ArchSmarterUtils_2022.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI">
@@ -62,6 +63,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="CreateFilledRegionCommand.cs" />
+    <Compile Include="SetTypeImageCommand.cs" />
     <Compile Include="ModifyCropBoundaryCommand.cs" />
     <Compile Include="FamilyFileSizeReporter.cs" />
     <Compile Include="DoorStorefrontMark.cs" />

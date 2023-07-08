@@ -46,7 +46,6 @@ namespace EfficiencyPack
                 t.Commit();
                 t.Dispose();
 
-                TaskDialog.Show("Success", "Room tag leaders toggled successfully.");
                 return Result.Succeeded;
             }
             catch (Exception ex)

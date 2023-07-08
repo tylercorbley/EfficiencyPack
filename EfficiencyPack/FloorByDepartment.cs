@@ -66,18 +66,6 @@ namespace EfficiencyPack
                     {
                         if (floorType.get_Parameter(BuiltInParameter.KEYNOTE_PARAM).AsString() != null)
                         {
-
-                            //// Get the room boundary curve
-                            //SpatialElementBoundaryOptions boundaryOptions = new SpatialElementBoundaryOptions();
-                            //IList<IList<BoundarySegment>> boundarySegments = ((Room)room).GetBoundarySegments(boundaryOptions);
-                            //CurveArray curveArray = new CurveArray();
-                            //foreach (IList<BoundarySegment> segments in boundarySegments)
-                            //{
-                            //    foreach (BoundarySegment segment in segments)
-                            //    {
-                            //        curveArray.Append(segment.GetCurve());
-                            //    }
-                            //}
                             IList<IList<BoundarySegment>> roomBoundaries = room.GetBoundarySegments(new SpatialElementBoundaryOptions());
                             if (roomBoundaries.Count > 0)
                             {
