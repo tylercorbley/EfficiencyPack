@@ -39,6 +39,8 @@ Plans by room – makes cropped plans per selected room.
 Create donut – Makes a white filled region donut at the crop boundary, which we use in interior elevations to quickly create view boundaries.
 ![](https://github.com/tylercorbley/EfficiencyPack/blob/master/gif%20folder/Raise%20Crop%20Boundary%20and%20Create%20Donut.gif)
 
+Rename View – Renames a view based on the selected room.
 ![](https://github.com/tylercorbley/EfficiencyPack/blob/master/gif%20folder/Rename%20View.gif)
 
+Set new Type Image – Sets the type image of every type in the currently open family document.
 ![](https://github.com/tylercorbley/EfficiencyPack/blob/master/gif%20folder/Set%20New%20Type%20Image.gif)
