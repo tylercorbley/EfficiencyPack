@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>EfficiencyPack_2024</Name>
+    <Assembly>EfficiencyPack_2024.dll</Assembly>
+    <FullClassName>EfficiencyPack.App</FullClassName>
+    <ClientId>dbbc0eed-d254-463e-9ec4-b98694c8ddbe</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+</RevitAddIns>

@@ -49,7 +49,7 @@ namespace EfficiencyPack
                             ElementId filledRegionType = GetFilledRegionTypeByName(doc, "Solid Fill - White (D)");
                             CurveLoop CropBoxBoundary = GetCropBoxBoundary(view);
                             boundaryLoops.Add(CropBoxBoundary);
-                            CurveLoop CenteredBoxCurveOffset = CurveLoop.CreateViaOffset(CropBoxBoundary, 2, viewNormal);
+                            CurveLoop CenteredBoxCurveOffset = CurveLoop.CreateViaOffset(CropBoxBoundary, .5, viewNormal);
                             boundaryLoops.Add(CenteredBoxCurveOffset);
                             // Start a new transaction
                             using (Transaction trans = new Transaction(doc, "Place Filled Region"))

@@ -69,22 +69,37 @@ namespace EfficiencyPack
                             IList<IList<BoundarySegment>> roomBoundaries = room.GetBoundarySegments(new SpatialElementBoundaryOptions());
                             if (roomBoundaries.Count > 0)
                             {
-                                foreach (IList<BoundarySegment> boundary in roomBoundaries)
-                                {
-                                    CurveArray curveArray = new CurveArray();
-                                    foreach (BoundarySegment seg in boundary)
-                                    {
-                                        Curve curve = seg.GetCurve();
-                                        curveArray.Append(curve);
-                                    }
-                                    // Get the level of the room
-                                    Level level = doc.GetElement(room.LevelId) as Level;
+                                // Create a list to hold the CurveLoops for each room boundary
+                                IList<CurveLoop> allCurveLoops = new List<CurveLoop>();
 
-                                    // Create a new floor using the NewFloor method
-                                    Floor floor = doc.Create.NewFloor(curveArray, floorType, level, false);
-                                    RaiseFloor(floor, raiseHeight);
-                                    counter++;
+                                foreach (var boundary in roomBoundaries)
+                                {
+                                    // Create a list to hold the CurveLoops for the current room boundary
+                                    IList<CurveLoop> curveLoops = new List<CurveLoop>();
+
+                                    foreach (BoundarySegment segment in boundary)
+                                    {
+                                        Curve curve = segment.GetCurve();
+                                        CurveLoop curveLoop = new CurveLoop();
+                                        curveLoop.Append(curve);
+                                        curveLoops.Add(curveLoop);
+                                    }
+
+                                    // Join the CurveLoops for the current room boundary
+                                    CurveLoop joinedCurveLoop = JoinCurveLoops(curveLoops);
+
+                                    if (joinedCurveLoop != null)
+                                    {
+                                        allCurveLoops.Add(joinedCurveLoop);
+                                    }
                                 }
+                                // Get the level of the room
+                                Level level = doc.GetElement(room.LevelId) as Level;
+
+                                // Create a new floor using the NewFloor method
+                                Floor floor = Floor.Create(doc, allCurveLoops.ToList(), floorType.Id, level.Id);
+                                RaiseFloor(floor, raiseHeight);
+                                counter++;
                             }
                         }
                     }
@@ -140,6 +155,24 @@ namespace EfficiencyPack
         {
             var method = MethodBase.GetCurrentMethod().DeclaringType?.FullName;
             return method;
+        }
+        // Helper method to join multiple CurveLoops
+        private CurveLoop JoinCurveLoops(IList<CurveLoop> curveLoops)
+        {
+            if (curveLoops.Count == 0)
+                return null;
+
+            CurveLoop joinedCurveLoop = curveLoops[0];
+
+            for (int i = 1; i < curveLoops.Count; i++)
+            {
+                foreach (Curve curve in curveLoops[i])
+                {
+                    joinedCurveLoop.Append(curve);
+                }
+            }
+
+            return joinedCurveLoop;
         }
     }
 }

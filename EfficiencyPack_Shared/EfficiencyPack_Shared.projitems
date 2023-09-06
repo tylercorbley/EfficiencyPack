@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>60ecf21e-4e3d-4bb1-875c-38c8574055f8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>EfficiencyPack_Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SharedAssembly.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CenterRoom.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CenterRoomTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CreateFilledRegionCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CurtainWallElevationAddIn.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DoorFireRating.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DoorInsetWrap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DoorStorefrontMark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DuplicateSheet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FamilyFileSizeReporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FloorByDepartment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FloorByRoom.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForestGen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InteriorElevation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LinesByRoom.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ModifyCropBoundaryCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RenameView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RoomPlanGen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SetTypeImageCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ToggleRoomTagLeader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\ButtonDataClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CommandAvailability.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Utils.cs" />
+  </ItemGroup>
+</Project>

@@ -53,11 +53,11 @@ namespace EfficiencyPack
                         {
                             if (GetFireRatingParameter(doc, hostId) == "1 HR")  // Do something if the host wall is 1 HR
                             {
-                                SetFireRatingParameter(doc, doorId, "20 MIN.");
+                                SetFireRatingParameter(doc, doorId, "45 MIN.");
                             }
                             else if (GetFireRatingParameter(doc, hostId) == "2 HR") // Do something if the host wall is 2 HR
                             {
-                                SetFireRatingParameter(doc, doorId, "45 MIN.");
+                                SetFireRatingParameter(doc, doorId, "90 MIN.");
                             }
                             else // Do something if the host wall is not rated
                             {

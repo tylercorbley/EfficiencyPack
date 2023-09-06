@@ -60,26 +60,40 @@ namespace EfficiencyPack
                             IList<IList<BoundarySegment>> roomBoundaries = room.GetBoundarySegments(new SpatialElementBoundaryOptions());
                             if (roomBoundaries.Count > 0)
                             {
-                                foreach (IList<BoundarySegment> boundary in roomBoundaries)
+                                // Create a list to hold the CurveLoops for each room boundary
+                                IList<CurveLoop> allCurveLoops = new List<CurveLoop>();
+
+                                foreach (var boundary in roomBoundaries)
                                 {
-                                    CurveArray curveArray = new CurveArray();
-                                    foreach (BoundarySegment seg in boundary)
+                                    // Create a list to hold the CurveLoops for the current room boundary
+                                    IList<CurveLoop> curveLoops = new List<CurveLoop>();
+
+                                    foreach (BoundarySegment segment in boundary)
                                     {
-                                        Curve curve = seg.GetCurve();
-                                        curveArray.Append(curve);
+                                        Curve curve = segment.GetCurve();
+                                        CurveLoop curveLoop = new CurveLoop();
+                                        curveLoop.Append(curve);
+                                        curveLoops.Add(curveLoop);
                                     }
 
-                                    // Get the level of the room
-                                    Level roomLevel = doc.GetElement(room.LevelId) as Level;
+                                    // Join the CurveLoops for the current room boundary
+                                    CurveLoop joinedCurveLoop = JoinCurveLoops(curveLoops);
 
-                                    // Select a floor type based on your criteria
-                                    ElementId selectedFloorTypeId = GetFloorTypeIdByName(doc, selectedFloorType);
-
-                                    // Create floors based on the room outline and floor type
-                                    Floor floor = doc.Create.NewFloor(curveArray, doc.GetElement(selectedFloorTypeId) as FloorType, roomLevel, false);
-                                    RaiseFloor(floor, raiseHeight);
-                                    counter++;
+                                    if (joinedCurveLoop != null)
+                                    {
+                                        allCurveLoops.Add(joinedCurveLoop);
+                                    }
                                 }
+                                // Get the level of the room
+                                Level roomLevel = doc.GetElement(room.LevelId) as Level;
+
+                                // Select a floor type based on your criteria
+                                ElementId selectedFloorTypeId = GetFloorTypeIdByName(doc, selectedFloorType);
+
+                                // Create floors based on the room outline and floor type
+                                Floor floor = Floor.Create(doc, allCurveLoops.ToList(), selectedFloorTypeId, roomLevel.Id);
+                                RaiseFloor(floor, raiseHeight);
+                                counter++;
                             }
                         }
 
@@ -140,6 +154,24 @@ namespace EfficiencyPack
         {
             var method = MethodBase.GetCurrentMethod().DeclaringType?.FullName;
             return method;
+        }
+        // Helper method to join multiple CurveLoops
+        private CurveLoop JoinCurveLoops(IList<CurveLoop> curveLoops)
+        {
+            if (curveLoops.Count == 0)
+                return null;
+
+            CurveLoop joinedCurveLoop = curveLoops[0];
+
+            for (int i = 1; i < curveLoops.Count; i++)
+            {
+                foreach (Curve curve in curveLoops[i])
+                {
+                    joinedCurveLoop.Append(curve);
+                }
+            }
+
+            return joinedCurveLoop;
         }
     }
 }
