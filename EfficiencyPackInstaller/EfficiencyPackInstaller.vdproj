@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_077E188C977941D59955D4C2B62C599C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_081408E17A3043E38B666D25EC75DD7B"
         "OwnerKey" = "8:_4234BB9EFB946DB9B185CA33507F11F7"
         "MsmSig" = "8:_UNDEFINED"
@@ -729,6 +735,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2DE1A1034488471DADD91758BFFC0D2A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2E1EA3982A82F1614514C63123873975"
         "OwnerKey" = "8:_FCA575E7EF19466E987D06AC3B764A8C"
         "MsmSig" = "8:_UNDEFINED"
@@ -1391,12 +1403,6 @@
         {
         "MsmKey" = "8:_6616763D11127B3507862F8B486BBFDE"
         "OwnerKey" = "8:_FCA575E7EF19466E987D06AC3B764A8C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_662233C7A2FA238AE0438C1DD37E74F7"
-        "OwnerKey" = "8:_83884889E6829C48B41CDF8414BD215B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2182,6 +2188,12 @@
         "Entry"
         {
         "MsmKey" = "8:_90CFB4981EBEE82176B4ED12000B4C16"
+        "OwnerKey" = "8:_83884889E6829C48B41CDF8414BD215B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_90CFB4981EBEE82176B4ED12000B4C16"
         "OwnerKey" = "8:_AC0D808847344706AF9572198BC310BF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2339,6 +2351,18 @@
         {
         "MsmKey" = "8:_A0295C1B1F560787BB93274F94277323"
         "OwnerKey" = "8:_AC0D808847344706AF9572198BC310BF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A16062BF0CD96DB4162A02254CA31D14"
+        "OwnerKey" = "8:_AC0D808847344706AF9572198BC310BF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A16062BF0CD96DB4162A02254CA31D14"
+        "OwnerKey" = "8:_FCA575E7EF19466E987D06AC3B764A8C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -4060,7 +4084,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_48B4F333090A1F83FD94DD4C805DA47B"
+        "OwnerKey" = "8:_AC0D808847344706AF9572198BC310BF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -4181,6 +4205,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_50002BD989BF732E8D0FD7C7EA9EA3A8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_662233C7A2FA238AE0438C1DD37E74F7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -4432,12 +4462,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_662233C7A2FA238AE0438C1DD37E74F7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_FE9C45A9FB81DABD50EEACC1CAFC03CC"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -4450,7 +4474,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AC0D808847344706AF9572198BC310BF"
+        "OwnerKey" = "8:_A16062BF0CD96DB4162A02254CA31D14"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -4799,6 +4823,24 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_25E711992F9D74B35D53A631BF7449DC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_48B4F333090A1F83FD94DD4C805DA47B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2DE1A1034488471DADD91758BFFC0D2A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_077E188C977941D59955D4C2B62C599C"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -7292,6 +7334,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A16062BF0CD96DB4162A02254CA31D14"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:EfficiencyPack_Resources, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A16062BF0CD96DB4162A02254CA31D14"
+                    {
+                    "Name" = "8:EfficiencyPack_Resources.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:EfficiencyPack_Resources.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFDD831C62D3482BA47E4516E89F49CD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A1CB390305B1F9C7E54D3C3D1473BC54"
             {
             "AssemblyRegister" = "3:1"
@@ -8818,15 +8891,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:EfficiencyPackInstaller"
-        "ProductCode" = "8:{D9A429B9-7179-4547-A607-15DF488A2469}"
-        "PackageCode" = "8:{15C05FF1-8613-4AE9-AB2E-C803309C24D0}"
+        "ProductCode" = "8:{D3387A84-292A-42E1-8F40-19217B461FAF}"
+        "PackageCode" = "8:{2E80FCD5-81CD-4135-8E84-EA6362C0594E}"
         "UpgradeCode" = "8:{4F9D1B33-725C-423E-A5E1-0E004F013AA7}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.0"
+        "ProductVersion" = "8:1.1.1"
         "Manufacturer" = "8:SchraderGroup"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -9338,6 +9411,62 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_077E188C977941D59955D4C2B62C599C"
+            {
+            "SourcePath" = "8:..\\EfficiencyPack_Resources\\obj\\Release\\EfficiencyPack_Resources.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E15145119BCD4B8585B60575DDCC045F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|Any CPU"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{CADECC70-238C-415F-9494-8EF55B70B7DB}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2DE1A1034488471DADD91758BFFC0D2A"
+            {
+            "SourcePath" = "8:..\\EfficiencyPack_Resources\\obj\\Release\\EfficiencyPack_Resources.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFDD831C62D3482BA47E4516E89F49CD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|Any CPU"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{CADECC70-238C-415F-9494-8EF55B70B7DB}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AC0D808847344706AF9572198BC310BF"
             {
             "SourcePath" = "8:..\\EfficiencyPack\\obj\\Release\\EfficiencyPack_2022.dll"

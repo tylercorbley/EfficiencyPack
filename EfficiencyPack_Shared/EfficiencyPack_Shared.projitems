@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RenameView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RoomPlanGen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SetTypeImageCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WorkingViews.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ToggleRoomTagLeader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ButtonDataClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CommandAvailability.cs" />
