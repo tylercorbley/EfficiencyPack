@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DimensionText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SharedAssembly.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CenterRoom.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CenterRoomTag.cs" />
@@ -19,7 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DoorInsetWrap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DoorStorefrontMark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DuplicateSheet.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FamilyFileSizeReporter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FloorByDepartment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FloorByRoom.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ForestGen.cs" />

@@ -48,6 +48,7 @@ namespace EfficiencyPack
             ButtonDataClass BtnFilledRegionDonut = new ButtonDataClass("FilledRegionDonut", "Create\rDonut", CreateFilledRegionCommand.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Select views. Get Donuts.");
             ButtonDataClass BtnSetTypeImageCommand = new ButtonDataClass("SetTypeImageCommand", "Set new\rType Image", SetTypeImageCommand.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Select Family. Input Type Image.");
             ButtonDataClass BtnWorkingViews = new ButtonDataClass("WorkingViews", "Create\rworking views", WorkingViews.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Create a set\rof new working views for you");
+            ButtonDataClass BtnDimensionOverride = new ButtonDataClass("DimensionText", "Override Dim", DimensionText.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Override the dimension Value with EQ");
 
             // 4. Create buttons
             PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
@@ -63,6 +64,7 @@ namespace EfficiencyPack
             PushButton myButton6 = panel800.AddItem(BtnRoomPlanGen.Data) as PushButton;
             PushButton myButton2 = panel900.AddItem(BtnFloorByRoom.Data) as PushButton;
             PushButton myButton10 = panel800.AddItem(BtnInteriorElevation.Data) as PushButton;
+            PushButton myButton14 = panel800.AddItem(BtnDimensionOverride.Data) as PushButton;
             //5. Split buttons
             SplitButtonData splitButtonData = new SplitButtonData("Center Room", "Center\rRoom");
             SplitButton splitButton = panel000.AddItem(splitButtonData) as SplitButton;
