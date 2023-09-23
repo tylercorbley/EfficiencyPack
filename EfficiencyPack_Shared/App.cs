@@ -49,6 +49,7 @@ namespace EfficiencyPack
             ButtonDataClass BtnSetTypeImageCommand = new ButtonDataClass("SetTypeImageCommand", "Set new\rType Image", SetTypeImageCommand.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Select Family. Input Type Image.");
             ButtonDataClass BtnWorkingViews = new ButtonDataClass("WorkingViews", "Create\rworking views", WorkingViews.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Create a set\rof new working views for you");
             ButtonDataClass BtnDimensionOverride = new ButtonDataClass("DimensionText", "Override Dim", DimensionText.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Override the dimension Value with EQ");
+            ButtonDataClass BtnLabelOffset = new ButtonDataClass("LabelOffset", "Modify Label\rLength", ModifyLabelOffset.GetMethod(), EfficiencyPack_Resources.Properties.Resources.Blue_32, EfficiencyPack_Resources.Properties.Resources.Blue_16, "Updates the label offset to the length of the view title");
 
             // 4. Create buttons
             PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
@@ -56,6 +57,7 @@ namespace EfficiencyPack
 #if REVIT2022
             PushButton myButton3 = panel000.AddItem(BtnDuplicateSheet.Data) as PushButton;
 #endif
+            PushButton labelOffsetButton = panel000.AddItem(BtnLabelOffset.Data) as PushButton;
             PushButton myButton4 = panel000.AddItem(BtnFloorByDepartment.Data) as PushButton;
             PushButton myButton5 = panel000.AddItem(BtnLinesByRoom.Data) as PushButton;
             PushButton myButton9 = panel000.AddItem(BtnRenameView.Data) as PushButton;
