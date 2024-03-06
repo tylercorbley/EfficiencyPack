@@ -8891,15 +8891,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:EfficiencyPackInstaller"
-        "ProductCode" = "8:{722FF900-7470-42F3-8B24-BEC313B01F12}"
-        "PackageCode" = "8:{0AE95508-BDAF-42EF-AEEF-DB8124CE9FA5}"
+        "ProductCode" = "8:{741CE034-C0FA-46F5-960A-9BF58935DF74}"
+        "PackageCode" = "8:{3E4F2F9E-A74F-4BFB-89FC-76E774D9F38B}"
         "UpgradeCode" = "8:{4F9D1B33-725C-423E-A5E1-0E004F013AA7}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.4"
+        "ProductVersion" = "8:1.1.5"
         "Manufacturer" = "8:SchraderGroup"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -9413,7 +9413,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_077E188C977941D59955D4C2B62C599C"
             {
-            "SourcePath" = "8:..\\EfficiencyPack_Resources\\obj\\Debug\\EfficiencyPack_Resources.dll"
+            "SourcePath" = "8:..\\EfficiencyPack_Resources\\obj\\Release\\EfficiencyPack_Resources.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E15145119BCD4B8585B60575DDCC045F"
@@ -9441,7 +9441,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2DE1A1034488471DADD91758BFFC0D2A"
             {
-            "SourcePath" = "8:..\\EfficiencyPack_Resources\\obj\\Debug\\EfficiencyPack_Resources.dll"
+            "SourcePath" = "8:..\\EfficiencyPack_Resources\\obj\\Release\\EfficiencyPack_Resources.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFDD831C62D3482BA47E4516E89F49CD"
@@ -9469,7 +9469,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AC0D808847344706AF9572198BC310BF"
             {
-            "SourcePath" = "8:..\\EfficiencyPack\\obj\\Debug\\EfficiencyPack_2022.dll"
+            "SourcePath" = "8:..\\EfficiencyPack\\obj\\Release\\EfficiencyPack_2022.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFDD831C62D3482BA47E4516E89F49CD"
@@ -9497,7 +9497,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FCA575E7EF19466E987D06AC3B764A8C"
             {
-            "SourcePath" = "8:..\\EfficiencyPack_2024\\obj\\Debug\\EfficiencyPack_2024.dll"
+            "SourcePath" = "8:..\\EfficiencyPack_2024\\obj\\Release\\EfficiencyPack_2024.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E15145119BCD4B8585B60575DDCC045F"
