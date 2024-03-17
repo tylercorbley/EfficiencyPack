@@ -18,32 +18,70 @@ namespace EfficiencyPack
                 UIDocument uidoc = uiApp.ActiveUIDocument;
                 Document doc = uidoc.Document;
 
-                // Get the active document
-                Document activeDoc = doc;
+                // Open a dialog to select the source Revit file
+                var openFileDialog = new System.Windows.Forms.OpenFileDialog();
+                openFileDialog.Filter = "Revit Files (*.rvt)|*.rvt";
+                openFileDialog.Title = "Select Source Revit File";
+                openFileDialog.Multiselect = false;
 
-                // Get the list of view types to import from another Revit file
-                List<ViewFamilyType> viewTypesToImport = GetViewTypesToImport(activeDoc);
-
-                if (viewTypesToImport.Any())
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    // Open a dialog to select the source Revit file
-                    var openFileDialog = new System.Windows.Forms.OpenFileDialog();
-                    openFileDialog.Filter = "Revit Files (*.rvt)|*.rvt";
-                    openFileDialog.Title = "Select Source Revit File";
-                    openFileDialog.Multiselect = false;
+                    string sourceFilePath = openFileDialog.FileName;
+                    // Open the source Revit file
+                    Document sourceDoc = uiApp.Application.OpenDocumentFile(sourceFilePath);
 
-                    if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    // Load view types from source document
+                    List<ViewFamilyType> sourceViewTypes = LoadViewTypes(sourceDoc);
+
+                    // Load view types from active document
+                    List<ViewFamilyType> activeViewTypes = LoadViewTypes(doc);
+
+                    // Print unique view types from source document
+                    List<ViewFamilyType> uniqueViewTypes = GetUniqueViewTypes(sourceViewTypes, activeViewTypes);
+                    int counter = 0;
+                    // Create new view types in the active document based on the unique view types found in the source document
+                    using (Transaction transaction = new Transaction(doc, "Import View Types"))
                     {
-                        string sourceFilePath = openFileDialog.FileName;
+                        transaction.Start();
+                        //((Autodesk.Revit.DB.ElementType)viewType_Type.Element).FamilyName
+                        foreach (var viewType in uniqueViewTypes)
+                        {
+                            string viewType_Type = viewType.FamilyName;//family 
+                            string viewTypeName = viewType.Name;
+                            foreach (var viewTypeActive in activeViewTypes)
+                            {
+                                string viewTypeActive_Type = viewTypeActive.FamilyName; // Family 
 
-                        // Open the source Revit file
-                        Document sourceDoc = uiApp.Application.OpenDocumentFile(sourceFilePath);
+                                if (viewType_Type == viewTypeActive_Type)
+                                {
+                                    ViewFamilyType newViewType = DuplicateViewFamilyType(doc, viewTypeActive, viewTypeName);
+                                    newViewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).Set(viewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).AsElementId());
+                                    newViewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).Set(viewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).AsElementId());
+                                    newViewType.get_Parameter(BuiltInParameter.SECTION_TAG).Set(viewType.get_Parameter(BuiltInParameter.SECTION_TAG).AsElementId());
+                                    newViewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).Set(viewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).AsValueString());//
+                                    ElementId templateId = FindViewTemplateByName(doc, viewType.get_Parameter(BuiltInParameter.DEFAULT_VIEW_TEMPLATE).AsValueString());
+                                    if (templateId != null)
+                                    {
+                                        newViewType.get_Parameter(BuiltInParameter.DEFAULT_VIEW_TEMPLATE).Set(templateId);//
+                                    }
+                                    newViewType.get_Parameter(BuiltInParameter.ASSIGN_TEMPLATE_ON_VIEW_CREATION).Set(1);//
+                                    //newViewType.get_Parameter(BuiltInParameter.PLAN_VIEW_VIEW_DIR).Set(viewType.get_Parameter(BuiltInParameter.PLAN_VIEW_VIEW_DIR).AsValueString());
+                                    counter++;
+                                    break;
+                                }
 
-                        // Import view types from the source Revit file
-                        ImportViewTypes(activeDoc, sourceDoc, viewTypesToImport);
+                            }
+                        }
 
-                        TaskDialog.Show("Success", "View types have been imported successfully.");
+                        // Commit the transaction
+                        transaction.Commit();
                     }
+
+                    // Close the source document
+                    sourceDoc.Close(false);
+
+                    // Show a success message
+                    TaskDialog.Show("Success", $"{counter} View types have been imported successfully.");
                 }
                 else
                 {
@@ -59,7 +97,7 @@ namespace EfficiencyPack
             }
         }
 
-        private List<ViewFamilyType> GetViewTypesToImport(Document doc)
+        private List<ViewFamilyType> LoadViewTypes(Document doc)
         {
             List<ViewFamilyType> viewTypes = new List<ViewFamilyType>();
 
@@ -70,9 +108,7 @@ namespace EfficiencyPack
             foreach (Element elem in viewFamilyTypes)
             {
                 ViewFamilyType viewType = elem as ViewFamilyType;
-
-                // Exclude view types like schedules, legends, etc. based on their view family name
-                if (viewType != null && !IsExcludedViewFamily(viewType))
+                if (viewType != null)
                 {
                     viewTypes.Add(viewType);
                 }
@@ -81,47 +117,79 @@ namespace EfficiencyPack
             return viewTypes;
         }
 
-        private bool IsExcludedViewFamily(ViewFamilyType viewType)
+        private List<ViewFamilyType> GetUniqueViewTypes(List<ViewFamilyType> sourceViewTypes, List<ViewFamilyType> activeViewTypes)
         {
-            // Define the list of excluded view family names
-            List<string> excludedViewFamilies = new List<string>
+            List<ViewFamilyType> uniqueViewTypes = new List<ViewFamilyType>();
+
+            foreach (var viewType in sourceViewTypes)
             {
-                "Schedule", // Example: Exclude schedules
-                "Legend",   // Example: Exclude legends
-                // Add more excluded view family names as needed
-            };
-
-            return excludedViewFamilies.Contains(viewType.ViewFamily.ToString());
-        }
-
-        private void ImportViewTypes(Document targetDoc, Document sourceDoc, List<ViewFamilyType> viewTypesToImport)
-        {
-            // Start a transaction in the target document
-            using (Transaction transaction = new Transaction(targetDoc, "Import View Types"))
-            {
-                transaction.Start();
-
-                // Import each view type from the source document to the target document
-                foreach (ViewFamilyType viewType in viewTypesToImport)
+                // Check if the view type exists in the active document
+                if (!activeViewTypes.Any(vt => vt.Name == viewType.Name))
                 {
-                    ElementType duplicatedType = viewType.Duplicate(viewType.Name) as ElementType;
-
-                    // Get the Id of the duplicated element
-                    ElementId newTypeId = duplicatedType.Id;
-
-                    // Optionally, you can perform additional operations on the imported view type,
-                    // such as renaming it, changing its settings, etc.
-
-                    // For example, to rename the imported view type:
-                    // ViewFamilyType newType = targetDoc.GetElement(newTypeId) as ViewFamilyType;
-                    // newType.Name = "New View Type Name";
+                    // Add unique view types to the list
+                    uniqueViewTypes.Add(viewType);
                 }
-
-                // Commit the transaction
-                transaction.Commit();
             }
-        }
 
+            return uniqueViewTypes;
+        }
+        // Function to create a copy of an existing ViewFamilyType with a specific name
+        public static ViewFamilyType DuplicateViewFamilyType(Document doc, ViewFamilyType sourceType, string newTypeName)
+        {
+            // Check if the newTypeName already exists
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            ICollection<Element> viewFamilyTypes = collector.OfClass(typeof(ViewFamilyType)).ToElements();
+
+            foreach (Element elem in viewFamilyTypes)
+            {
+                ViewFamilyType existingType = elem as ViewFamilyType;
+                if (existingType != null && existingType.Name == newTypeName)
+                {
+                    // Return null if a ViewFamilyType with the newTypeName already exists
+                    return null;
+                }
+            }
+            // Duplicate the sourceType
+            ViewFamilyType copiedType = sourceType.Duplicate(newTypeName) as ViewFamilyType;
+
+            // Return the copied ViewFamilyType
+            return copiedType;
+        }
+        private ElementId FindViewTemplateByName(Document doc, string viewTemplateName)
+        {
+            FilteredElementCollector viewTemplateCollector = new FilteredElementCollector(doc)
+                .OfClass(typeof(View))
+                .WhereElementIsNotElementType();
+            // .Where(view => view.IsTemplate && !view.IsTemporaryViewModeEnabled());
+
+            foreach (Element viewTemplateElem in viewTemplateCollector)
+            {
+                View viewTemplate = viewTemplateElem as View;
+                if (viewTemplate != null && viewTemplate.Name.Equals(viewTemplateName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return viewTemplate.Id;
+                }
+            }
+
+            return null;
+        }
+        private ElementId FindViewElevationTagByName(Document doc, string ElevationTagName)
+        {
+            FilteredElementCollector viewTemplateCollector = new FilteredElementCollector(doc)
+                .OfClass(typeof(View))
+                .WhereElementIsNotElementType();
+
+            foreach (Element viewTemplateElem in viewTemplateCollector)
+            {
+                View viewTemplate = viewTemplateElem as View;
+                if (viewTemplate != null && viewTemplate.Name.Equals(ElevationTagName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return viewTemplate.Id;
+                }
+            }
+
+            return null;
+        }
         public static String GetMethod()
         {
             var method = MethodBase.GetCurrentMethod().DeclaringType?.FullName;

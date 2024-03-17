@@ -70,7 +70,11 @@ namespace EfficiencyPack
                         ViewPlan rcpView = ViewPlan.Create(doc, rcpViewFamilyTypeId, level.Id);
                         rcpView.Name = RCPName;
 
+                        ElementId viewTemplate = FindViewTemplateByName(doc, "000 - Working Floor Plan");
                         // Reset view templates to "None"
+                        //SetViewTemplate(planView, viewTemplate);
+                        //planView.ViewTemplateId = viewTemplate;
+                        //rcpView.ViewTemplateId = viewTemplate;
                         ResetViewTemplate(planView);
                         ResetViewTemplate(rcpView);
 
@@ -144,7 +148,39 @@ namespace EfficiencyPack
 
             return uniqueName;
         }
+        private ElementId FindViewTemplateByName(Document doc, string viewTemplateName)
+        {
+            FilteredElementCollector viewTemplateCollector = new FilteredElementCollector(doc)
+                .OfClass(typeof(View))
+                .WhereElementIsNotElementType();
+            // .Where(view => view.IsTemplate && !view.IsTemporaryViewModeEnabled());
 
+            foreach (Element viewTemplateElem in viewTemplateCollector)
+            {
+                View viewTemplate = viewTemplateElem as View;
+                if (viewTemplate != null && viewTemplate.Name.Equals(viewTemplateName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return viewTemplate.Id;
+                }
+            }
+
+            return null;
+        }
+        public void SetViewTemplate(View view, ElementId viewTemplateId)
+        {
+            // Check if the view template ID is valid
+            if (viewTemplateId != ElementId.InvalidElementId)
+            {
+                // Set the view template for the view
+                view.ViewTemplateId = viewTemplateId;
+
+            }
+            else
+            {
+                // If the view template ID is invalid, show a warning
+                TaskDialog.Show("Warning", "Invalid View Template ID. View template not set.");
+            }
+        }
         private bool ViewNameExists(Document doc, string name)
         {
             // Check if a view with the given name already exists
