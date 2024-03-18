@@ -4795,15 +4795,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:EfficiencyPackInstaller"
-        "ProductCode" = "8:{30EB3743-5E6B-439A-BE15-89ADF6102F11}"
-        "PackageCode" = "8:{8A44487F-CDBE-4993-A897-2BA250F9784E}"
+        "ProductCode" = "8:{605589F6-043B-46F9-8773-8AC390DC0F8E}"
+        "PackageCode" = "8:{6B2762A1-BE79-4178-828D-738AFFA5D665}"
         "UpgradeCode" = "8:{4F9D1B33-725C-423E-A5E1-0E004F013AA7}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.7"
+        "ProductVersion" = "8:1.1.71"
         "Manufacturer" = "8:SchraderGroup"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -5401,7 +5401,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FCA575E7EF19466E987D06AC3B764A8C"
             {
-            "SourcePath" = "8:..\\EfficiencyPack_2024\\obj\\Release\\EfficiencyPack_2024.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E15145119BCD4B8585B60575DDCC045F"

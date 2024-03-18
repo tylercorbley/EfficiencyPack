@@ -38,6 +38,14 @@ namespace EfficiencyPack
 
                     // Print unique view types from source document
                     List<ViewFamilyType> uniqueViewTypes = GetUniqueViewTypes(sourceViewTypes, activeViewTypes);
+                    List<string> uniqueViewTypeNames = new List<string>();
+
+                    foreach (ViewFamilyType viewType in uniqueViewTypes)
+                    {
+                        uniqueViewTypeNames.Add(viewType.Name);
+                    }
+
+
                     int counter = 0;
                     // Create new view types in the active document based on the unique view types found in the source document
                     using (Transaction transaction = new Transaction(doc, "Import View Types"))
@@ -48,26 +56,31 @@ namespace EfficiencyPack
                         {
                             string viewType_Type = viewType.FamilyName;//family 
                             string viewTypeName = viewType.Name;
-                            foreach (var viewTypeActive in activeViewTypes)
+                            //TaskDialog.Show(counter.ToString(), viewTypeName);
+                            if (!viewTypeName.Contains("Detail - Ceiling") && !viewTypeName.Contains("Rentable") && !viewTypeName.Contains("Typical Detail"))
                             {
-                                string viewTypeActive_Type = viewTypeActive.FamilyName; // Family 
 
-                                if (viewType_Type == viewTypeActive_Type)
+                                foreach (var viewTypeActive in activeViewTypes)
                                 {
-                                    ViewFamilyType newViewType = DuplicateViewFamilyType(doc, viewTypeActive, viewTypeName);
-                                    newViewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).Set(viewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).AsElementId());
-                                    newViewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).Set(viewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).AsElementId());
-                                    newViewType.get_Parameter(BuiltInParameter.SECTION_TAG).Set(viewType.get_Parameter(BuiltInParameter.SECTION_TAG).AsElementId());
-                                    newViewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).Set(viewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).AsValueString());//
-                                    ElementId templateId = FindViewTemplateByName(doc, viewType.get_Parameter(BuiltInParameter.DEFAULT_VIEW_TEMPLATE).AsValueString());
-                                    if (templateId != null)
+                                    string viewTypeActive_Type = viewTypeActive.FamilyName; // Family 
+
+                                    if (viewType_Type == viewTypeActive_Type)
                                     {
-                                        newViewType.get_Parameter(BuiltInParameter.DEFAULT_VIEW_TEMPLATE).Set(templateId);//
+                                        ViewFamilyType newViewType = DuplicateViewFamilyType(doc, viewTypeActive, viewTypeName);
+                                        newViewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).Set(viewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).AsElementId());
+                                        newViewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).Set(viewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).AsElementId());
+                                        newViewType.get_Parameter(BuiltInParameter.SECTION_TAG).Set(viewType.get_Parameter(BuiltInParameter.SECTION_TAG).AsElementId());
+                                        newViewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).Set(viewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).AsValueString());//
+                                        ElementId templateId = FindViewTemplateByName(doc, viewType.get_Parameter(BuiltInParameter.DEFAULT_VIEW_TEMPLATE).AsValueString());
+                                        if (templateId != null)
+                                        {
+                                            newViewType.get_Parameter(BuiltInParameter.DEFAULT_VIEW_TEMPLATE).Set(templateId);//
+                                        }
+                                        newViewType.get_Parameter(BuiltInParameter.ASSIGN_TEMPLATE_ON_VIEW_CREATION).Set(1);//
+                                                                                                                            //newViewType.get_Parameter(BuiltInParameter.PLAN_VIEW_VIEW_DIR).Set(viewType.get_Parameter(BuiltInParameter.PLAN_VIEW_VIEW_DIR).AsValueString());
+                                        counter++;
+                                        break;
                                     }
-                                    newViewType.get_Parameter(BuiltInParameter.ASSIGN_TEMPLATE_ON_VIEW_CREATION).Set(1);//
-                                    //newViewType.get_Parameter(BuiltInParameter.PLAN_VIEW_VIEW_DIR).Set(viewType.get_Parameter(BuiltInParameter.PLAN_VIEW_VIEW_DIR).AsValueString());
-                                    counter++;
-                                    break;
                                 }
 
                             }
