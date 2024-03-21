@@ -51,6 +51,7 @@ namespace EfficiencyPack
             ButtonDataClass BtnDimensionOverride = new ButtonDataClass("DimensionText", "Override Dim", DimensionText.GetMethod(), EfficiencyPack_Resources.Properties.Resources.width_32, EfficiencyPack_Resources.Properties.Resources.width_16, "Override the dimension Value with EQ");
             ButtonDataClass BtnLabelOffset = new ButtonDataClass("LabelOffset", "Modify Label\rLength", ModifyLabelOffset.GetMethod(), EfficiencyPack_Resources.Properties.Resources.length_32, EfficiencyPack_Resources.Properties.Resources.length_16, "Updates the label offset to the length of the view title");
             ButtonDataClass BtnImportViewType = new ButtonDataClass("ViewTypeImport", "Import View\rTypes", ViewTypeImportTool.GetMethod(), EfficiencyPack_Resources.Properties.Resources.binoculars_32, EfficiencyPack_Resources.Properties.Resources.binoculars_16, "Imports View Types from another open project");
+            ButtonDataClass BtnExplodeCAD = new ButtonDataClass("ExplodeCAD", "Explode CAD", ExplodeCAD.GetMethod(), EfficiencyPack_Resources.Properties.Resources.house_32, EfficiencyPack_Resources.Properties.Resources.house_16, "Explodes CAD based on the selected line styles");
 
             // 4. Create buttons
             PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
@@ -69,6 +70,8 @@ namespace EfficiencyPack
             PushButton myButton10 = panel800.AddItem(BtnInteriorElevation.Data) as PushButton;
             PushButton myButton14 = panel800.AddItem(BtnDimensionOverride.Data) as PushButton;
             PushButton myButton15 = panel000.AddItem(BtnImportViewType.Data) as PushButton;
+            PushButton myButton16 = panel000.AddItem(BtnExplodeCAD.Data) as PushButton;
+
             //5. Split buttons
             SplitButtonData splitButtonData = new SplitButtonData("Center Room", "Center\rRoom");
             SplitButton splitButton = panel000.AddItem(splitButtonData) as SplitButton;

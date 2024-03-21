@@ -76,6 +76,12 @@
     <Compile Include="FrmIntElev.Designer.cs">
       <DependentUpon>FrmIntElev.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmExplodeCAD.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmExplodeCAD.Designer.cs">
+      <DependentUpon>FrmExplodeCAD.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmRmPlan.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,6 +107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmIntElev.resx">
       <DependentUpon>FrmIntElev.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmExplodeCAD.resx">
+      <DependentUpon>FrmExplodeCAD.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmRmPlan.resx">
       <DependentUpon>FrmRmPlan.cs</DependentUpon>

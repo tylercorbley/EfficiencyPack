@@ -47,5 +47,10 @@ namespace EfficiencyPack
         {
 
         }
+
+        private void FrmRmPlan_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
