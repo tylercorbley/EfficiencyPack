@@ -13,20 +13,8 @@ namespace EfficiencyPack
             int X = subcategoryNames.Count;
             for (int i = 0; i < X; i++)
             {
-                //combo boxesVVVV
-                ComboBox cmbLineStyle = new ComboBox();
-                cmbLineStyle.Name = "comboBox" + i; // Unique name for each ComboBox
                 int widthOffset = 190;
                 int heightBoth = 20;
-                cmbLineStyle.Location = new Point(widthOffset, i * heightBoth); // Adjust Y position based on index
-                cmbLineStyle.Width = widthOffset;
-                cmbLineStyle.Height = heightBoth;
-                foreach (String lineStyle in lineStyles)
-                {
-                    cmbLineStyle.Items.Add(lineStyle);
-                }
-                cmbLineStyle.SelectedIndex = 0;
-                panel1.Controls.Add(cmbLineStyle); // Add ComboBox to the Panel
                 //labelsVVV
                 Label lblLineStyle = new Label();
                 lblLineStyle.Text = subcategoryNames[i];
@@ -36,6 +24,19 @@ namespace EfficiencyPack
                 lblLineStyle.Width = widthOffset;
                 lblLineStyle.Paint += Label_Paint; // Attach Paint event handler
                 panel1.Controls.Add(lblLineStyle); // Add Label to the Panel
+                //combo boxesVVVV
+                ComboBox cmbLineStyle = new ComboBox();
+                cmbLineStyle.Name = subcategoryNames[i]; // Unique name for each ComboBox
+                cmbLineStyle.Location = new Point(widthOffset, i * heightBoth); // Adjust Y position based on index
+                cmbLineStyle.Width = widthOffset;
+                cmbLineStyle.Height = heightBoth;
+                cmbLineStyle.Items.Add("Skip");
+                foreach (String lineStyle in lineStyles)
+                {
+                    cmbLineStyle.Items.Add(lineStyle);
+                }
+                cmbLineStyle.SelectedIndex = 0;
+                panel1.Controls.Add(cmbLineStyle); // Add ComboBox to the Panel
             }
         }
 
@@ -65,24 +66,45 @@ namespace EfficiencyPack
         {
             this.Close();
         }
-        public List<string> GetSelectedItemsFromComboBoxes()
+        public Dictionary<string, string> GetSelectedItemsFromComboBoxes()
         {
-            List<string> selectedItems = new List<string>();
+            Dictionary<string, string> selectedItems = new Dictionary<string, string>();
 
             foreach (Control control in panel1.Controls)
             {
                 if (control is ComboBox comboBox)
                 {
                     string selectedItem = comboBox.SelectedItem as string;
+                    string layerName = comboBox.Name;
                     if (!string.IsNullOrEmpty(selectedItem))
                     {
-                        selectedItems.Add(selectedItem);
+                        selectedItems[layerName] = selectedItem;
                     }
                 }
             }
 
             return selectedItems;
         }
+
+
+        //public List<string> GetSelectedItemsFromComboBoxes()
+        //{
+        //    List<string> selectedItems = new List<string>();
+
+        //    foreach (Control control in panel1.Controls)
+        //    {
+        //        if (control is ComboBox comboBox)
+        //        {
+        //            string selectedItem = comboBox.SelectedItem as string;
+        //            if (!string.IsNullOrEmpty(selectedItem))
+        //            {
+        //                selectedItems.Add(selectedItem);
+        //            }
+        //        }
+        //    }
+
+        //    return selectedItems;
+        //}
         //public string GetSelectedLineStyles()
         //{
         //    return cmbLineStyle.SelectedItem.ToString();

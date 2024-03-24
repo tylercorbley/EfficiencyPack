@@ -56,7 +56,6 @@ namespace EfficiencyPack
                         {
                             string viewType_Type = viewType.FamilyName;//family 
                             string viewTypeName = viewType.Name;
-                            //TaskDialog.Show(counter.ToString(), viewTypeName);
                             if (!viewTypeName.Contains("Detail - Ceiling") && !viewTypeName.Contains("Rentable") && !viewTypeName.Contains("Typical Detail"))
                             {
 
@@ -66,10 +65,16 @@ namespace EfficiencyPack
 
                                     if (viewType_Type == viewTypeActive_Type)
                                     {
+                                        string ElevationTag = viewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).AsValueString();
+                                        ElementId ElevationTagID = GetElevationTagByName(doc, ElevationTag);
+                                        string CalloutTag = viewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).AsValueString();
+                                        ElementId CalloutTagID = GetElevationTagByName(doc, CalloutTag);
+                                        string SectionTag = viewType.get_Parameter(BuiltInParameter.SECTION_TAG).AsValueString();
+                                        ElementId SectionTagID = GetElevationTagByName(doc, SectionTag);
                                         ViewFamilyType newViewType = DuplicateViewFamilyType(doc, viewTypeActive, viewTypeName);
-                                        newViewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).Set(viewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).AsElementId());
-                                        newViewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).Set(viewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).AsElementId());
-                                        newViewType.get_Parameter(BuiltInParameter.SECTION_TAG).Set(viewType.get_Parameter(BuiltInParameter.SECTION_TAG).AsElementId());
+                                        newViewType.get_Parameter(BuiltInParameter.ELEVATN_TAG).Set(ElevationTagID);
+                                        newViewType.get_Parameter(BuiltInParameter.CALLOUT_TAG).Set(CalloutTagID);
+                                        newViewType.get_Parameter(BuiltInParameter.SECTION_TAG).Set(SectionTagID);
                                         newViewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).Set(viewType.get_Parameter(BuiltInParameter.VIEWER_REFERENCE_LABEL_TEXT).AsValueString());//
                                         ElementId templateId = FindViewTemplateByName(doc, viewType.get_Parameter(BuiltInParameter.DEFAULT_VIEW_TEMPLATE).AsValueString());
                                         if (templateId != null)
@@ -129,7 +134,26 @@ namespace EfficiencyPack
 
             return viewTypes;
         }
+        public static ElementId GetElevationTagByName(Document doc, string tagName)
+        {
+            // Filtered element collector to collect all annotation symbol types
+            FilteredElementCollector collector = new FilteredElementCollector(doc)
+                //.OfCategory(BuiltInCategory.OST_ElevationMarks)
+                .WhereElementIsElementType();
 
+            // Iterate through each elevation tag element to check its name
+            foreach (Element elem in collector)
+            {
+                // Check if the element is an Elevation Tag and its name matches the input tagName
+                if (elem.Name == tagName)
+                {
+                    return elem.Id;
+                }
+            }
+
+            // Return ElementId.InvalidElementId if no matching Elevation Tag is found
+            return ElementId.InvalidElementId;
+        }
         private List<ViewFamilyType> GetUniqueViewTypes(List<ViewFamilyType> sourceViewTypes, List<ViewFamilyType> activeViewTypes)
         {
             List<ViewFamilyType> uniqueViewTypes = new List<ViewFamilyType>();
@@ -179,23 +203,6 @@ namespace EfficiencyPack
             {
                 View viewTemplate = viewTemplateElem as View;
                 if (viewTemplate != null && viewTemplate.Name.Equals(viewTemplateName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return viewTemplate.Id;
-                }
-            }
-
-            return null;
-        }
-        private ElementId FindViewElevationTagByName(Document doc, string ElevationTagName)
-        {
-            FilteredElementCollector viewTemplateCollector = new FilteredElementCollector(doc)
-                .OfClass(typeof(View))
-                .WhereElementIsNotElementType();
-
-            foreach (Element viewTemplateElem in viewTemplateCollector)
-            {
-                View viewTemplate = viewTemplateElem as View;
-                if (viewTemplate != null && viewTemplate.Name.Equals(ElevationTagName, StringComparison.OrdinalIgnoreCase))
                 {
                     return viewTemplate.Id;
                 }

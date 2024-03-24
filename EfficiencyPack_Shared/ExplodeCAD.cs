@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Line = Autodesk.Revit.DB.Line;
 #endregion
 
 namespace EfficiencyPack
@@ -23,9 +24,6 @@ namespace EfficiencyPack
                 Document doc = uiDoc.Document;
 
                 // Get the selected element
-                //Reference selectedRef = uiDoc.Selection.PickObject(ObjectType.Element);
-
-                // Get the selected element
                 if (uiApp.ActiveUIDocument.Selection.GetElementIds().Count == 0)
                 {
                     TaskDialog.Show("Selection Required", "Please select a CAD import element.");
@@ -34,54 +32,108 @@ namespace EfficiencyPack
 
                 Element selectedElement = doc.GetElement(uiApp.ActiveUIDocument.Selection.GetElementIds().First());
 
-
+                //Element selectedElement = doc.GetElement(selectedRef);
+                List<string> lineStyles = GetAllLineStyleNames(doc);
                 List<string> subcategoryNames = ExtractCADSubcategories(selectedElement);
 
-                //Element selectedElement = doc.GetElement(selectedRef);
-
-                List<string> lineStyles = GetAllLineStyleNames(doc);
-
+                List<string> lineStylesReturn = new List<string>(); // Example list of line styles
+                List<string> subcategoryNamesReturn = new List<string>(); // Example list of subcategory names
                 FrmExplodeCAD formCAD = new FrmExplodeCAD(lineStyles, subcategoryNames);
-                //formCAD.Height = 550;
-                //formCAD.Width = 550;
                 formCAD.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 
-                (List<Line> lines, List<PolyLine> polyLines) = ExtractCADGeometry(doc);
-
-                //formCAD.UpdateListView(subcategoryNames);
-
-
                 if (formCAD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    // Retrieve the selected line styles paired with their corresponding layer names
+                    Dictionary<string, string> selectedItems = formCAD.GetSelectedItemsFromComboBoxes();
 
-
-                    // Check if the selected element is a CAD import
                     if (selectedElement is ImportInstance cadInstance)
                     {
-                        // Get the CAD link document
-                        //Document cadDoc = cadInstance.GetLinkDocument();
+                        using (Transaction curves = new Transaction(doc))
+                        {
+                            curves.Start("Convert DWG to RVT");
+                            foreach (var kvp in selectedItems)
+                            {
+                                string lineStyle = kvp.Value;
+                                string layerName = kvp.Key;
+                                if (lineStyle != "Skip")
+                                {
 
-                        // Ensure that the CAD document is not null
-                        //if (cadDoc != null)
-                        //{
-                        //    // Get the list of line styles from the CAD document
-                        //    List<string> CADlineStyles = GetCADLineStyles(cadDoc);
+                                    GraphicsStyle graphicsStyle = GetGraphicsStyleByName(doc, lineStyle);
+                                    ImportInstance importInst = (ImportInstance)selectedElement;
 
-                        //    // Display the line styles (for testing)
-                        //    foreach (string lineStyle in lineStyles)
-                        //    {
-                        //        TaskDialog.Show("Line Styles", lineStyle);
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    TaskDialog.Show("Error", "Failed to retrieve CAD link document.");
-                        //}
+
+                                    Options op = commandData.Application.ActiveUIDocument.Document.Application.Create.NewGeometryOptions();
+                                    op.ComputeReferences = true;
+                                    op.IncludeNonVisibleObjects = false;
+                                    GeometryElement geoElem1 = importInst.get_Geometry(op);
+                                    if (geoElem1 != null)
+                                    {
+                                        foreach (GeometryObject geoObj1 in geoElem1)
+                                        {
+                                            GeometryInstance geoInst = geoObj1 as GeometryInstance;
+                                            if (geoInst != null)
+                                            {
+                                                GeometryElement geoElem2 = geoInst.GetInstanceGeometry() as GeometryElement;
+                                                if (geoElem2 != null)
+                                                {
+                                                    foreach (GeometryObject geoObj2 in geoElem2)
+                                                    {
+                                                        ElementId styleid = geoObj2.GraphicsStyleId;
+                                                        if (styleid != ElementId.InvalidElementId)
+                                                        {
+                                                            IList<Autodesk.Revit.DB.Line> lines = new List<Line>();
+                                                            IList<PolyLine> polyLines = new List<PolyLine>();
+                                                            IList<Arc> arcs = new List<Arc>();
+                                                            GraphicsStyle style = (GraphicsStyle)doc.GetElement(styleid);
+                                                            string dwglayername = style.GraphicsStyleCategory.Name;
+                                                            if (dwglayername == layerName)
+                                                            {
+                                                                if (geoObj2 is Line)
+                                                                {
+                                                                    lines.Add(geoObj2 as Line);
+                                                                }
+                                                                if (geoObj2 is PolyLine)
+                                                                {
+                                                                    polyLines.Add(geoObj2 as PolyLine);
+                                                                }
+                                                                if (geoObj2 is Arc)
+                                                                {
+                                                                    arcs.Add(geoObj2 as Arc);
+                                                                }
+                                                            }
+                                                            IList<Line> polyCurves = ConvertPolyLinesToCurves(polyLines);
+                                                            foreach (Line line in polyCurves)
+                                                            {
+                                                                lines.Add(line);
+                                                            }
+                                                            foreach (Curve c in lines)
+                                                            {
+                                                                if (c.Length > 0.01)
+                                                                {
+                                                                    doc.Create.NewDetailCurve(doc.ActiveView, c).LineStyle = graphicsStyle;
+                                                                }
+                                                            }
+                                                            foreach (Arc c in arcs)
+                                                            {
+                                                                doc.Create.NewDetailCurve(doc.ActiveView, c).LineStyle = graphicsStyle;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            curves.Commit();
+                        }
                     }
                     else
                     {
                         TaskDialog.Show("Error", "Please select a CAD import element.");
                     }
 
+                }
                 return Result.Succeeded;
             }
             catch (Exception ex)
@@ -90,15 +142,21 @@ namespace EfficiencyPack
                 return Result.Failed;
             }
         }
-
-        private List<string> GetCADLineStyles(Document cadDoc)
+        public IList<Autodesk.Revit.DB.Line> ConvertPolyLinesToCurves(IList<PolyLine> polyLines)
         {
-            List<string> lineStyles = new List<string>();
+            IList<Autodesk.Revit.DB.Line> curves = new List<Line>();
+            foreach (PolyLine polyLine in polyLines)
+            {
+                for (int i = 0; i < polyLine.NumberOfCoordinates - 1; i++)
+                {
+                    XYZ startPoint = polyLine.GetCoordinate(i);
+                    XYZ endPoint = polyLine.GetCoordinate(i + 1);
+                    Line curveLine = Line.CreateBound(startPoint, endPoint);
+                    curves.Add(curveLine);
+                }
+            }
 
-            // Implement logic to retrieve line styles from the CAD document
-            // You can use the API methods available for working with CAD documents
-
-            return lineStyles;
+            return curves;
         }
         public static List<string> ExtractCADSubcategories(Element selectedElement)
         {
@@ -149,51 +207,6 @@ namespace EfficiencyPack
             }
 
             return results;
-        }
-        public static (List<Line>, List<PolyLine>) ExtractCADGeometry(Document doc)
-        {
-            List<Line> lines = new List<Line>();
-            List<PolyLine> polyLines = new List<PolyLine>();
-
-            FilteredElementCollector collector = new FilteredElementCollector(doc)
-                .OfClass(typeof(ImportInstance))
-                .WhereElementIsNotElementType();
-
-            foreach (ImportInstance importInst in collector)
-            {
-                Options options = new Options();
-                options.ComputeReferences = true;
-                options.IncludeNonVisibleObjects = true;
-
-                GeometryElement geoElem1 = importInst.get_Geometry(options);
-                if (geoElem1 != null)
-                {
-                    foreach (GeometryObject geoObj1 in geoElem1)
-                    {
-                        GeometryInstance geoInst = geoObj1 as GeometryInstance;
-                        if (geoInst != null)
-                        {
-                            GeometryElement geoElem2 = geoInst.GetInstanceGeometry();
-                            if (geoElem2 != null)
-                            {
-                                foreach (GeometryObject geoObj2 in geoElem2)
-                                {
-                                    if (geoObj2 is Line line)
-                                    {
-                                        lines.Add(line);
-                                    }
-                                    else if (geoObj2 is PolyLine polyLine)
-                                    {
-                                        polyLines.Add(polyLine);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return (lines, polyLines);
         }
         public static String GetMethod()
         {
