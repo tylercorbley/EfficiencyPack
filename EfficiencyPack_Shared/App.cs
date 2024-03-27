@@ -2,6 +2,8 @@
 using Autodesk.Revit.UI;
 using System;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolBar;
 
 #endregion
 
@@ -52,6 +54,7 @@ namespace EfficiencyPack
             ButtonDataClass BtnLabelOffset = new ButtonDataClass("LabelOffset", "Modify Label\rLength", ModifyLabelOffset.GetMethod(), EfficiencyPack_Resources.Properties.Resources.length_32, EfficiencyPack_Resources.Properties.Resources.length_16, "Updates the label offset to the length of the view title");
             ButtonDataClass BtnImportViewType = new ButtonDataClass("ViewTypeImport", "Import View\rTypes", ViewTypeImportTool.GetMethod(), EfficiencyPack_Resources.Properties.Resources.binoculars_32, EfficiencyPack_Resources.Properties.Resources.binoculars_16, "Imports View Types from another open project");
             ButtonDataClass BtnExplodeCAD = new ButtonDataClass("ExplodeCAD", "Explode CAD", ExplodeCAD.GetMethod(), EfficiencyPack_Resources.Properties.Resources.house_32, EfficiencyPack_Resources.Properties.Resources.house_16, "Explodes CAD based on the selected line styles");
+            ButtonDataClass BtnImportTypes = new ButtonDataClass("ImportTypes", "Explode CAD", ImportTypes.GetMethod(), EfficiencyPack_Resources.Properties.Resources.cabinet_32, EfficiencyPack_Resources.Properties.Resources.cabinet_16, "Explodes CAD based on the selected line styles");
 
             // 4. Create buttons
             PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
@@ -69,7 +72,6 @@ namespace EfficiencyPack
             PushButton myButton2 = panel900.AddItem(BtnFloorByRoom.Data) as PushButton;
             PushButton myButton10 = panel800.AddItem(BtnInteriorElevation.Data) as PushButton;
             PushButton myButton14 = panel800.AddItem(BtnDimensionOverride.Data) as PushButton;
-            PushButton myButton15 = panel000.AddItem(BtnImportViewType.Data) as PushButton;
             PushButton myButton16 = panel000.AddItem(BtnExplodeCAD.Data) as PushButton;
 
             //5. Split buttons
@@ -86,6 +88,10 @@ namespace EfficiencyPack
             splitButton2.AddPushButton(BtnDoorFireRating.Data);
             splitButton2.AddPushButton(BtnDoorCMUGWB.Data);
             splitButton2.AddPushButton(BtnDoorStorefrontMark.Data);
+            SplitButtonData splitButtonData4 = new SplitButtonData("Type Importers", "Import\rTypes");
+            SplitButton splitButton4 = panel000.AddItem(splitButtonData4) as SplitButton;
+            splitButton4.AddPushButton(BtnImportViewType.Data);
+            splitButton4.AddPushButton(BtnImportTypes.Data);
 
             return Result.Succeeded;
         }

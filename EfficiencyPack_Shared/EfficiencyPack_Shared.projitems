@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DimensionText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExplodeCAD.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ImportTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTypeImport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ModifyLabelOffset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SharedAssembly.cs" />

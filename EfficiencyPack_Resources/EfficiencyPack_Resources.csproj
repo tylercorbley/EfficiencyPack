@@ -58,6 +58,12 @@
     <Compile Include="FrmDtlLn.Designer.cs">
       <DependentUpon>FrmDtlLn.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmImportTypes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmImportTypes.Designer.cs">
+      <DependentUpon>FrmImportTypes.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmFlrRm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +104,9 @@
   <ItemGroup>
     <EmbeddedResource Include="FrmDtlLn.resx">
       <DependentUpon>FrmDtlLn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmImportTypes.resx">
+      <DependentUpon>FrmImportTypes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmFlrRm.resx">
       <DependentUpon>FrmFlrRm.cs</DependentUpon>
