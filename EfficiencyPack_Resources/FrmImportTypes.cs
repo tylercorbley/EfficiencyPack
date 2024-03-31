@@ -5,145 +5,178 @@ using System.Windows.Forms;
 
 namespace EfficiencyPack
 {
-    public partial class FrmExplodeCAD : Form
+    public partial class FrmImportTypes : Form
     {
-        public FrmExplodeCAD(List<String> lineStyles, List<string> subcategoryNames)
+        private List<(string family, string type, string systemFamily)> typeData;
+        private List<(string family, string type, string systemFamily)> selectedTypes = new List<(string family, string type, string systemFamily)>();
+        private TreeView treeViewTypes; // Add a TreeView control
+        private TextBox txtSearch;
+
+        public FrmImportTypes(List<(string family, string type, string systemFamily)> typeData)
         {
             InitializeComponent();
-            int X = subcategoryNames.Count;
-            for (int i = 0; i < X; i++)
-            {
-                int widthOffset = 190;
-                int heightBoth = 20;
-                //labelsVVV
-                Label lblLineStyle = new Label();
-                lblLineStyle.Text = subcategoryNames[i];
-                lblLineStyle.Name = "label" + i; // Unique name for each label
-                lblLineStyle.Location = new Point(00, i * heightBoth); // Adjust Y position based on index
-                lblLineStyle.Height = heightBoth;
-                lblLineStyle.Width = widthOffset;
-                lblLineStyle.Paint += Label_Paint; // Attach Paint event handler
-                panel1.Controls.Add(lblLineStyle); // Add Label to the Panel
-                //combo boxesVVVV
-                ComboBox cmbLineStyle = new ComboBox();
-                cmbLineStyle.Name = subcategoryNames[i]; // Unique name for each ComboBox
-                cmbLineStyle.Location = new Point(widthOffset, i * heightBoth); // Adjust Y position based on index
-                cmbLineStyle.Width = widthOffset;
-                cmbLineStyle.Height = heightBoth;
-                cmbLineStyle.Items.Add("Skip");
-                foreach (String lineStyle in lineStyles)
-                {
-                    cmbLineStyle.Items.Add(lineStyle);
-                }
-                cmbLineStyle.SelectedIndex = 0;
-                panel1.Controls.Add(cmbLineStyle); // Add ComboBox to the Panel
-            }
+            this.typeData = typeData;
+
+            InitializeControls();
+            PopulateTreeView();
         }
 
-        private void Label_Paint(object sender, PaintEventArgs e)
+        private void InitializeControls()
         {
-            Label label = sender as Label;
-            if (label != null)
+            // Initialize TreeView
+            this.treeViewTypes = new TreeView();
+            this.treeViewTypes.Width = 400;
+            this.treeViewTypes.Height = 400;
+            this.treeViewTypes.Location = new Point(15, 54);
+            this.treeViewTypes.CheckBoxes = true;
+
+            // Add event handler for AfterCheck event to handle checkbox changes
+            this.treeViewTypes.AfterCheck += TreeViewTypes_AfterCheck;
+
+            // Add TreeView control to the form
+            this.Controls.Add(treeViewTypes);
+
+            // Initialize TextBox for search
+            this.txtSearch = new TextBox();
+            this.txtSearch.Width = 344;
+            this.txtSearch.Height = 20;
+            this.txtSearch.Location = new Point(71, 28);
+            this.txtSearch.TextChanged += TxtSearch_TextChanged;
+
+            // Add TextBox control to the form
+            this.Controls.Add(txtSearch);
+        }
+
+        private void PopulateTreeView()
+        {
+            treeViewTypes.Nodes.Clear();
+
+            foreach (var entry in typeData)
             {
-                int borderWidth = 1; // Adjust the border thickness here
-                using (Pen borderPen = new Pen(Color.Black, borderWidth))
+                string family = entry.family;
+                string type = entry.type;
+                string systemFamily = entry.systemFamily;
+
+                var familyNode = FindOrCreateNode(treeViewTypes.Nodes, family);
+                var systemFamilyNode = FindOrCreateNode(familyNode.Nodes, systemFamily);
+                var typeNode = systemFamilyNode.Nodes.Add(type);
+                typeNode.Tag = (family, type, systemFamily);
+            }
+
+            treeViewTypes.CollapseAll();
+        }
+
+        private TreeNode FindOrCreateNode(TreeNodeCollection nodes, string nodeName)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Text == nodeName)
                 {
-                    e.Graphics.DrawLine(borderPen, 0, label.Height - 1, label.Width, label.Height - 1); // Bottom line
+                    return node;
                 }
             }
 
+            // If the node doesn't exist, create and return a new one
+            return nodes.Add(nodeName, nodeName);
         }
-        private void cmbType_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
-        }
-        private void btnCancel_Click(object sender, System.EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void btnOK_Click(object sender, System.EventArgs e)
+        private void btnOK_Click(object sender, EventArgs e)
         {
-            this.Close();
-        }
-        public Dictionary<string, string> GetSelectedItemsFromComboBoxes()
-        {
-            Dictionary<string, string> selectedItems = new Dictionary<string, string>();
-
-            foreach (Control control in panel1.Controls)
+            // Collect selected items
+            foreach (TreeNode node in treeViewTypes.Nodes)
             {
-                if (control is ComboBox comboBox)
-                {
-                    string selectedItem = comboBox.SelectedItem as string;
-                    string layerName = comboBox.Name;
-                    if (!string.IsNullOrEmpty(selectedItem))
-                    {
-                        selectedItems[layerName] = selectedItem;
-                    }
-                }
+                CollectSelectedNodes(node);
             }
 
-            return selectedItems;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
-
-        //public List<string> GetSelectedItemsFromComboBoxes()
-        //{
-        //    List<string> selectedItems = new List<string>();
-
-        //    foreach (Control control in panel1.Controls)
-        //    {
-        //        if (control is ComboBox comboBox)
-        //        {
-        //            string selectedItem = comboBox.SelectedItem as string;
-        //            if (!string.IsNullOrEmpty(selectedItem))
-        //            {
-        //                selectedItems.Add(selectedItem);
-        //            }
-        //        }
-        //    }
-
-        //    return selectedItems;
-        //}
-        //public string GetSelectedLineStyles()
-        //{
-        //    return cmbLineStyle.SelectedItem.ToString();
-        //}
-
-        //public void UpdateListView(List<string> subcategoryNames)
-        //{
-        //    // Clear existing items in the ListView
-        //    listView1.Items.Clear();
-        //    //listView1.Columns.Clear();
-
-        //    // Add subcategory names to the ListView
-        //    foreach (string name in subcategoryNames)
-        //    {
-        //        ListViewItem item = new ListViewItem(name);
-        //        listView1.Items.Add(item);
-        //    }
-
-        //    // Set ListView to details view mode
-        //    //listView1.View = View.Details;
-
-        //    // Set column width to fit content
-        //    listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-        //}
-
-
-        private void label1_Click(object sender, EventArgs e)
+        private void CollectSelectedNodes(TreeNode parentNode)
         {
+            foreach (TreeNode node in parentNode.Nodes)
+            {
+                if (node.Checked)
+                {
+                    var tuple = (ValueTuple<string, string, string>)node.Tag;
+                    selectedTypes.Add(tuple);
+                }
 
+                // Recursively collect selected nodes
+                CollectSelectedNodes(node);
+            }
         }
 
-        private void btnOK_Click_1(object sender, EventArgs e)
+        private void TreeViewTypes_AfterCheck(object sender, TreeViewEventArgs e)
         {
-
+            // Update child nodes when a parent node is checked
+            if (e.Node.Nodes.Count > 0)
+            {
+                foreach (TreeNode childNode in e.Node.Nodes)
+                {
+                    childNode.Checked = e.Node.Checked;
+                }
+            }
         }
 
-        private void FrmExplodeCAD_Load(object sender, EventArgs e)
+        private void TxtSearch_TextChanged(object sender, EventArgs e)
         {
+            string searchTerm = txtSearch.Text.Trim().ToLower();
 
+            foreach (TreeNode node in treeViewTypes.Nodes)
+            {
+                FilterNodesBySearch(node, searchTerm);
+            }
+
+            // Reset font styles if the search term is empty
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                ResetFontStyles(treeViewTypes.Nodes);
+            }
+        }
+
+        private void FilterNodesBySearch(TreeNode node, string searchTerm)
+        {
+            // If the node is null, return
+            if (node == null)
+            {
+                return;
+            }
+
+            foreach (TreeNode childNode in node.Nodes)
+            {
+                // Check if the node's text contains the search term
+                bool nodeMatchesSearch = childNode.Text.ToLower().Contains(searchTerm.ToLower());
+
+                // Set the font style of the node based on the search term
+                childNode.ForeColor = nodeMatchesSearch ? treeViewTypes.ForeColor : Color.Gray;
+                childNode.NodeFont = nodeMatchesSearch ? new Font(treeViewTypes.Font, FontStyle.Bold) : new Font(treeViewTypes.Font, FontStyle.Regular);
+
+                // Recursively filter child nodes
+                FilterNodesBySearch(childNode, searchTerm);
+            }
+        }
+
+        private void ResetFontStyles(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.NodeFont = new Font(treeViewTypes.Font, FontStyle.Regular); // Reset font style
+                node.ForeColor = treeViewTypes.ForeColor; // Reset fore color
+
+                // Recursively reset font styles for child nodes
+                ResetFontStyles(node.Nodes);
+            }
+        }
+
+        public List<(string, string, string)> GetSelectedTypes()
+        {
+            return selectedTypes;
         }
     }
 }
