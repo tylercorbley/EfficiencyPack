@@ -10,6 +10,15 @@ namespace EfficiencyPack
         public FrmExplodeCAD(List<String> lineStyles, List<string> subcategoryNames)
         {
             InitializeComponent();
+
+            // Populate comboBoxAllLines with lineStyles
+            comboBoxAllLines.Items.Add("Skip");
+            comboBoxAllLines.Items.AddRange(lineStyles.ToArray());
+            comboBoxAllLines.SelectedIndex = 0;
+            comboBoxAllLines.AutoCompleteMode = AutoCompleteMode.SuggestAppend; // Enable autocomplete
+            comboBoxAllLines.AutoCompleteSource = AutoCompleteSource.ListItems; // Autocomplete from dropdown list
+            comboBoxAllLines.TextChanged += ComboBoxAllLines_TextChanged; // Subscribe to TextChanged event
+
             int X = subcategoryNames.Count;
             for (int i = 0; i < X; i++)
             {
@@ -27,6 +36,7 @@ namespace EfficiencyPack
                 //combo boxesVVVV
                 ComboBox cmbLineStyle = new ComboBox();
                 cmbLineStyle.Name = subcategoryNames[i]; // Unique name for each ComboBox
+                cmbLineStyle.DropDownStyle.Equals("DropDown");
                 cmbLineStyle.Location = new Point(widthOffset, i * heightBoth); // Adjust Y position based on index
                 cmbLineStyle.Width = widthOffset;
                 cmbLineStyle.Height = heightBoth;
@@ -36,6 +46,9 @@ namespace EfficiencyPack
                     cmbLineStyle.Items.Add(lineStyle);
                 }
                 cmbLineStyle.SelectedIndex = 0;
+                cmbLineStyle.AutoCompleteMode = AutoCompleteMode.SuggestAppend; // Enable autocomplete
+                cmbLineStyle.AutoCompleteSource = AutoCompleteSource.ListItems; // Autocomplete from dropdown list
+                cmbLineStyle.TextChanged += ComboBoxAllLines_TextChanged; // Subscribe to TextChanged event
                 panel1.Controls.Add(cmbLineStyle); // Add ComboBox to the Panel
             }
         }
@@ -69,16 +82,23 @@ namespace EfficiencyPack
         public Dictionary<string, string> GetSelectedItemsFromComboBoxes()
         {
             Dictionary<string, string> selectedItems = new Dictionary<string, string>();
-
+            string AllLines = comboBoxAllLines.SelectedItem as String;
             foreach (Control control in panel1.Controls)
             {
                 if (control is ComboBox comboBox)
                 {
                     string selectedItem = comboBox.SelectedItem as string;
                     string layerName = comboBox.Name;
-                    if (!string.IsNullOrEmpty(selectedItem))
+                    if (AllLines == "Skip")
                     {
-                        selectedItems[layerName] = selectedItem;
+                        if (!string.IsNullOrEmpty(selectedItem))
+                        {
+                            selectedItems[layerName] = selectedItem;
+                        }
+                    }
+                    else
+                    {
+                        selectedItems[layerName] = AllLines;
                     }
                 }
             }
@@ -86,7 +106,20 @@ namespace EfficiencyPack
             return selectedItems;
         }
 
-
+        private void ComboBoxAllLines_TextChanged(object sender, EventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            if (comboBox != null)
+            {
+                // Check if the entered text matches any item in the dropdown list
+                string enteredText = comboBox.Text;
+                if (comboBox.Items.Contains(enteredText))
+                {
+                    // If the entered text is valid, select it in the combo box
+                    comboBox.SelectedItem = enteredText;
+                }
+            }
+        }
         //public List<string> GetSelectedItemsFromComboBoxes()
         //{
         //    List<string> selectedItems = new List<string>();
@@ -142,6 +175,21 @@ namespace EfficiencyPack
         }
 
         private void FrmExplodeCAD_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

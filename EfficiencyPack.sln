@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfficiencyPack_2024", "Effi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfficiencyPack_Resources", "EfficiencyPack_Resources\EfficiencyPack_Resources.csproj", "{CADECC70-238C-415F-9494-8EF55B70B7DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfficiencyPack_2023", "EfficiencyPack_2023\EfficiencyPack_2023.csproj", "{B6ED6988-DBF0-4560-BF25-886CE60B4286}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 		{CADECC70-238C-415F-9494-8EF55B70B7DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CADECC70-238C-415F-9494-8EF55B70B7DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CADECC70-238C-415F-9494-8EF55B70B7DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6ED6988-DBF0-4560-BF25-886CE60B4286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6ED6988-DBF0-4560-BF25-886CE60B4286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6ED6988-DBF0-4560-BF25-886CE60B4286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6ED6988-DBF0-4560-BF25-886CE60B4286}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{27c116f9-2985-4370-a5a1-c798aae53410}*SharedItemsImports = 4
 		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{60ecf21e-4e3d-4bb1-875c-38c8574055f8}*SharedItemsImports = 13
+		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{b6ed6988-dbf0-4560-bf25-886ce60b4286}*SharedItemsImports = 4
 		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{f0a7f46b-fb4e-44af-ae7f-1b29baa3abaf}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal

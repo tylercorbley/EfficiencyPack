@@ -26,7 +26,7 @@ namespace EfficiencyPack
             // Initialize TreeView
             this.treeViewTypes = new TreeView();
             this.treeViewTypes.Width = 400;
-            this.treeViewTypes.Height = 400;
+            this.treeViewTypes.Height = 675;
             this.treeViewTypes.Location = new Point(15, 54);
             this.treeViewTypes.CheckBoxes = true;
 

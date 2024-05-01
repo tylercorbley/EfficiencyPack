@@ -238,6 +238,114 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\burning_32.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\binoculars_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\burning_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cabinet_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\center_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\copy_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\donut_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\door_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\elevation_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\entrance_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fire_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\floor_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\forrest_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\length_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\outline_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rename_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\width_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\window_32.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\binoculars_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\burning_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cabinet_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\center_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\copy_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\donut_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\door_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\elevation_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\entrance_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fire_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\floor_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\forrest_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\length_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\outline_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rename_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\width_16.dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\window_16.dark.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(AppData)\Autodesk\REVIT\Addins\2022" copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2022"

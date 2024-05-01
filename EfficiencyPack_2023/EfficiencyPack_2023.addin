@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
   <AddIn Type="Application">
-    <Name>EfficiencyPack_2024</Name>
-    <Assembly>EfficiencyPack_2024.dll</Assembly>
+    <Name>EfficiencyPack_2023</Name>
+    <Assembly>EfficiencyPack_2023.dll</Assembly>
     <FullClassName>EfficiencyPack.App</FullClassName>
-    <ClientId>dbbc0eed-d254-463e-9ec4-b98694c8ddbe</ClientId>
+	  <ClientId>48919A48-BC42-403C-B43F-62FBA9D6922E</ClientId>
     <VendorId>com.sgarc</VendorId>
     <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
   </AddIn>
