@@ -34,8 +34,8 @@ namespace EfficiencyPack
             // 8. get view family types
             FilteredElementCollector vftCollector = new FilteredElementCollector(doc);
             vftCollector.OfClass(typeof(ViewFamilyType));
-            ViewFamilyType fpVFT = null;
-            ViewFamilyType cpVFT = null;
+            //ViewFamilyType fpVFT = null;
+            //ViewFamilyType cpVFT = null;
             List<string> vftNames = new List<String>();
             foreach (ViewFamilyType curVFT in vftCollector)
             {

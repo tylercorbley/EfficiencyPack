@@ -43,9 +43,13 @@
     <Reference Include="ArchSmarterUtils_2022">
       <HintPath>..\..\ArchSmarterUtils\ArchSmarterUtils_2022\bin\Debug\ArchSmarterUtils_2022.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Python.Runtime, Version=3.0.3.0, Culture=neutral, PublicKeyToken=5000fea6cba702dd, processorArchitecture=MSIL">
+      <HintPath>..\packages\pythonnet.3.0.3\lib\netstandard2.0\Python.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2022\RevitAPI.dll</HintPath>
     </Reference>
@@ -82,6 +86,9 @@
       <Project>{cadecc70-238c-415f-9494-8ef55b70b7db}</Project>
       <Name>EfficiencyPack_Resources</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\EfficiencyPack_Shared\EfficiencyPack_Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

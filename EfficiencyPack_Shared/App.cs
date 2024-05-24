@@ -71,8 +71,10 @@ namespace EfficiencyPack
             ButtonDataClass BtnImportViewType = new ButtonDataClass("ViewTypeImport", "Import View\rTypes", ViewTypeImportTool.GetMethod(), IconSelector.SelectIcon(dark, "binoculars_32"), IconSelector.SelectIcon(dark, "binoculars_16"), "Imports View Types from another open project");
             ButtonDataClass BtnExplodeCAD = new ButtonDataClass("ExplodeCAD", "Explode CAD", ExplodeCAD.GetMethod(), IconSelector.SelectIcon(dark, "house_32"), IconSelector.SelectIcon(dark, "house_16"), "Explodes CAD based on the selected line styles");
             ButtonDataClass BtnImportTypes = new ButtonDataClass("ImportTypes", "Import types", ImportTypes.GetMethod(), IconSelector.SelectIcon(dark, "cabinet_32"), IconSelector.SelectIcon(dark, "cabinet_16"), "Imports only selected types from reference project.");
-
-
+#if REVIT2023|| REVIT2024
+            ButtonDataClass BtnGoogleEarthTopo = new ButtonDataClass("GoogleEarthTopo", "Google Earth\rTopo", GoogleEarthTopo.GetMethod(), IconSelector.SelectIcon(dark, "site_32"), IconSelector.SelectIcon(dark, "site_16"), "Creates a topography based on a region defined in google earth.");
+#endif
+            ButtonDataClass BtnAlignViewsOnSheets = new ButtonDataClass("AlignViewsOnSheets", "Align Views\rOn Sheets", AlignViewsOnSheets.GetMethod(), IconSelector.SelectIcon(dark, "center_32"), IconSelector.SelectIcon(dark, "center_16"), "Aligns views across sheets. Select original view, active the tool, then select what you want aligned to the original");
             // 4. Create buttons
             PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
             PushButton myButton1 = panel000.AddItem(BtnForestGen.Data) as PushButton;
@@ -90,7 +92,10 @@ namespace EfficiencyPack
             PushButton myButton10 = panel800.AddItem(BtnInteriorElevation.Data) as PushButton;
             PushButton myButton14 = panel800.AddItem(BtnDimensionOverride.Data) as PushButton;
             PushButton myButton16 = panel000.AddItem(BtnExplodeCAD.Data) as PushButton;
-
+#if REVIT2023|| REVIT2024
+            PushButton myButton17 = panel000.AddItem(BtnGoogleEarthTopo.Data) as PushButton;
+#endif
+            PushButton myButton18 = panel000.AddItem(BtnAlignViewsOnSheets.Data) as PushButton;
             //5. Split buttons
             SplitButtonData splitButtonData = new SplitButtonData("Center Room", "Center\rRoom");
             SplitButton splitButton = panel000.AddItem(splitButtonData) as SplitButton;

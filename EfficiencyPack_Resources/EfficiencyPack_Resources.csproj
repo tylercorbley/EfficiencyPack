@@ -40,9 +40,13 @@
     <StartProgram>$(ProgramW6432)\Autodesk\Revit 2022\Revit.exe</StartProgram>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Python.Runtime, Version=3.0.3.0, Culture=neutral, PublicKeyToken=5000fea6cba702dd, processorArchitecture=MSIL">
+      <HintPath>..\packages\pythonnet.3.0.3\lib\netstandard2.0\Python.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -52,6 +56,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrmGEE.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmGEE.Designer.cs">
+      <DependentUpon>FrmGEE.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmDtlLn.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +112,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FrmGEE.resx">
+      <DependentUpon>FrmGEE.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmDtlLn.resx">
       <DependentUpon>FrmDtlLn.cs</DependentUpon>
     </EmbeddedResource>
@@ -239,112 +252,125 @@
     <EmbeddedResource Include="Resources\burning_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\binoculars_32.dark.png" />
+    <None Include="packages.config" />
+    <None Include="Resources\binoculars_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\burning_32.dark.png" />
+    <None Include="Resources\burning_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\cabinet_32.dark.png" />
+    <None Include="Resources\cabinet_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\center_32.dark.png" />
+    <None Include="Resources\center_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\copy_32.dark.png" />
+    <None Include="Resources\copy_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\donut_32.dark.png" />
+    <None Include="Resources\donut_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\door_32.dark.png" />
+    <None Include="Resources\door_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\elevation_32.dark.png" />
+    <None Include="Resources\elevation_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\entrance_32.dark.png" />
+    <None Include="Resources\entrance_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\fire_32.dark.png" />
+    <None Include="Resources\fire_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\floor_32.dark.png" />
+    <None Include="Resources\floor_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\forrest_32.dark.png" />
+    <None Include="Resources\forrest_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\house_32.dark.png" />
+    <None Include="Resources\house_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\length_32.dark.png" />
+    <None Include="Resources\length_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\outline_32.dark.png" />
+    <None Include="Resources\outline_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\rename_32.dark.png" />
+    <None Include="Resources\rename_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\width_32.dark.png" />
+    <None Include="Resources\width_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\window_32.dark.png" />
+    <None Include="Resources\window_32_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\binoculars_16.dark.png" />
+    <None Include="Resources\floor_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\burning_16.dark.png" />
+    <None Include="Resources\forrest_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\cabinet_16.dark.png" />
+    <None Include="Resources\house_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\center_16.dark.png" />
+    <None Include="Resources\length_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\copy_16.dark.png" />
+    <None Include="Resources\outline_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\donut_16.dark.png" />
+    <None Include="Resources\rename_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\door_16.dark.png" />
+    <None Include="Resources\width_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\elevation_16.dark.png" />
+    <None Include="Resources\window_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\entrance_16.dark.png" />
+    <None Include="Resources\binoculars_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\fire_16.dark.png" />
+    <None Include="Resources\burning_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\floor_16.dark.png" />
+    <None Include="Resources\cabinet_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\forrest_16.dark.png" />
+    <None Include="Resources\center_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\house_16.dark.png" />
+    <None Include="Resources\copy_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\length_16.dark.png" />
+    <None Include="Resources\donut_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\outline_16.dark.png" />
+    <None Include="Resources\door_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\rename_16.dark.png" />
+    <None Include="Resources\elevation_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\width_16.dark.png" />
+    <None Include="Resources\entrance_16_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\window_16.dark.png" />
+    <None Include="Resources\fire_16_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\site_16_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\site_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\site_32_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\site_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
