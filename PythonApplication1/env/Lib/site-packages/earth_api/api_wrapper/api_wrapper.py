@@ -1,0 +1,94 @@
+from abc import ABC, abstractmethod
+
+class BasicAPIWrapper(ABC):
+    # from http://localhost:8000/sample/index.html
+
+    def __init__(self, **kwargs) -> None:
+
+        self.version = "latest"
+        if "version" in kwargs:
+            self.version = kwargs["version"]
+
+        self.base_url = "http://localhost:8000"
+        if "host" in kwargs:
+            self.base_url = kwargs["base_url"]
+            # remove / at the end
+            if self.base_url[-1] == "/":
+                self.base_url = self.base_url[:-1]
+        
+    
+    @abstractmethod
+    def get_camera(self):
+        pass
+
+    @abstractmethod
+    def set_camera(self, camera):
+        pass
+
+    @abstractmethod
+    def set_flight(self, flight):
+        pass
+
+    @abstractmethod
+    def add_layer(self, layer):
+        pass
+
+    @abstractmethod
+    def get_layer(self, layer_id):
+        pass
+
+    @abstractmethod
+    def remove_layer(self, layer_id):
+        pass
+
+    @abstractmethod
+    def clear_layers(self, target):
+        pass
+
+    @abstractmethod
+    def add_graphic(self, graphic):
+        pass
+
+    @abstractmethod
+    def get_graphic(self, graphic_id):
+        pass
+
+    @abstractmethod
+    def update_graphic(self, graphic):
+        pass
+
+    @abstractmethod
+    def remove_graphic(self, graphic_id):
+        pass
+
+    @abstractmethod
+    def clear_graphics(self):
+        pass
+
+    @abstractmethod
+    def add_drawing(self, drawing):
+        pass
+
+    @abstractmethod
+    def remove_drawing(self, drawing_id):
+        pass
+
+    @abstractmethod
+    def clear_drawings(self):
+        pass
+
+    @abstractmethod
+    def get_workspace(self):
+        pass
+
+    @abstractmethod
+    def import_workspace(self, workspace_info):
+        pass
+
+    @abstractmethod
+    def clear_workspace(self):
+        pass
+
+    @abstractmethod
+    def get_snapshot(self):
+        pass

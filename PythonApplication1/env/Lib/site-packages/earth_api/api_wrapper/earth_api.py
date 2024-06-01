@@ -1,0 +1,344 @@
+# -*- coding:utf-8 -*-
+import os
+import sys
+automation_api_root_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '../'))
+
+if  automation_api_root_path not in sys.path:
+    sys.path.insert(0, automation_api_root_path)
+
+
+from api_wrapper.http_api_wrapper import HttpAPIWrapper
+from api_wrapper.swagger_api_wrapper import SwaggerAPIWrapper
+
+class EarthAPI:
+
+    def __init__(self, **kwargs) -> None:
+        """Initialize the EarthAPI
+        :param kwargs:
+            type: str, swagger or http
+            version: str, e.g. latest or 1.16
+            host: str, http://localhost:8000
+        """
+        if "type" in kwargs:
+            type = kwargs["type"]
+            if type == "http":
+                self.api_wrapper = HttpAPIWrapper(**kwargs)
+
+        self.api_wrapper = SwaggerAPIWrapper(**kwargs)
+
+    def get_camera(self):
+        """get the current camera information of ArcGIS Earth
+
+        example of a camera:
+            {
+                "position": {
+                    "x": 113.59647525051167,
+                    "y": 32.464715999412107,
+                    "z": 2213290.0751730204,
+                    "spatialReference": {
+                        "wkid": 4326
+                    },
+                "heading": 354.04823651174161,
+                "tilt": 19.96239543740441
+                }
+            }
+
+        Returns:
+            int, dict: return the status code and the camera information
+        """
+        return self.api_wrapper.get_camera()
+
+    def set_camera(self, camera):
+        """set the camera information for ArcGIS Earth
+
+        Args:
+            camera (dict): the target camera information
+            example of a camera: 
+            {
+                "position": {
+                    "x": 113.59647525051167,
+                    "y": 32.464715999412107,
+                    "z": 2213290.0751730204,
+                    "spatialReference": {
+                        "wkid": 4326
+                    },
+                    "heading": 354.04823651174161,
+                    "tilt": 19.96239543740441
+                }
+            }
+
+        Returns:
+            int, dict: return the status code and the result of setting the camera
+        """
+        return self.api_wrapper.set_camera(camera)
+
+    def set_flight(self, flight):
+        """fly to the target position
+
+        Args:
+            flight (dict): the target position
+            example of flight:
+            {
+                "camera":{
+                    "position":{
+                        "x":-92,
+                        "y":41,
+                        "z":11000000,
+                        "spatialReference":{
+                            "wkid":4326
+                        }
+                    },
+                    "heading":0.0,
+                    "tilt":0.099999999996554886
+                },
+                "duration":2
+            }
+
+        Returns:
+            int, dict: return the status code and the result of the flight
+        """
+        return self.api_wrapper.set_flight(flight)
+
+    def add_layer(self, layer):
+        """Add layer to ArcGIS Earth
+
+        Args:
+            layer (dict): layer information
+            example of layer information:
+            {
+                "type":"MapService",
+                "URI" :"https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+                "target" :"OperationalLayers"
+            }
+
+        Returns:
+            int, dict: return the status code and the layer information
+        """
+        return self.api_wrapper.add_layer(layer)
+
+    def get_layer(self, layer_id):
+        """get the layer information according to the layer id
+
+        Args:
+            layer_id (str): the target layer id
+            example of layer id: "dfsdfskdlfjkdsf"
+
+        Returns:
+            int, dict: return the status code and the layer information
+        """
+        return self.api_wrapper.get_layer(layer_id)
+
+    def remove_layer(self, layer_id):
+        """remove the layer according to the layer id
+
+        Args:
+            layer_id (str): layer id for remove
+            example of layer id: "dfsdfskdlfjkdsf"
+
+        Returns:
+            int, dict: return the status code and the result of removing
+        """
+        return self.api_wrapper.remove_layer(layer_id)
+
+    def clear_layers(self, target="operationallayers"):
+        """clear all layers
+
+        Args:
+            target (str, optional): target layers to be removed. 
+            "operationallayers" or "baselayers" or "elevationlayers"
+            Defaults to "operationallayers".
+
+        Returns:
+            int, dict: return the status code and the result of clearing layers
+        """
+        return self.api_wrapper.clear_layers(target)
+
+    def add_graphic(self, graphic):
+        """add a graphic to ArcGIS Earth
+
+        Args:
+            graphic (dict): the target graphic information
+            example of a graphic:
+            {
+                "id": "point-picture-marker-graphic-js",
+                "geometry": {
+                    "type": "point",
+                    "x": -100,
+                    "y": 40
+                },
+                "symbol": {
+                    "type": "picture-marker",
+                    "url": "https://static.arcgis.com/images/Symbols/Shapes/BlackStarLargeB.png",
+                    "width": "64px",
+                    "height": "64px",
+                    "angle": 0,
+                    "xoffset": "10px",
+                    "yoffset": "10px"
+                }
+            }
+
+        Returns:
+            int, dict: return the status code and the added graphic information
+        """
+        return self.api_wrapper.add_graphic(graphic)
+
+    def get_graphic(self, graphic_id):
+        """get the graphic information according to the graphic id
+
+        Args:
+            graphic_id (str): the target graphic id
+
+        Returns:
+            int, dict: return the status code and  the target graphic information 
+        """
+        return self.api_wrapper.get_graphic(graphic_id)
+
+    def update_graphic(self, graphic):
+        """update the graphic according to the new graphic information
+
+        Args:
+            graphic (dict): the new graphic information
+            example of a new graphic: 
+            {
+                "id": "point-picture-marker-graphic-js",
+                "geometry": {
+                    "type": "point",
+                    "x": -100,
+                    "y": 40
+                },
+                "symbol": {
+                    "type": "picture-marker",
+                    "url": "https://static.arcgis.com/images/Symbols/Shapes/BlackStarLargeB.png",
+                    "width": "64px",
+                    "height": "64px",
+                    "angle": 0,
+                    "xoffset": "10px",
+                    "yoffset": "10px"
+                }
+            }
+
+        Returns:
+            int, dict: return the status code and the result of updating graphic
+        """
+        return self.api_wrapper.update_graphic(graphic)
+
+    def remove_graphic(self, graphic_id):
+        """remove the graphic according to the graphic id
+
+        Args:
+            graphic_id (str): the graphic id to remove
+
+        Returns:
+            int, dict: return the status code and the result of removing the graphic
+        """
+        return self.api_wrapper.remove_graphic(graphic_id)
+
+    def clear_graphics(self):
+        """clear all graphics
+
+        Returns:
+            int, dict: return the status code and the result of clearing graphics
+        """
+        return self.api_wrapper.clear_graphics()
+
+    def add_drawing(self, drawing):
+        """add a new drawing to ArcGIS Earth
+
+        Args:
+            drawing (dict): the new drawing information
+            example of drawing:
+            
+            {
+                "id": "point graphic sample",
+                "title": "point graphic sample",
+                "geometry": {
+                    "x": -100,
+                    "y": 40,
+                    "spatialReference": {
+                        "wkid": 4326
+                    }
+                },
+                "symbol": {
+                    "type": "picture-marker",
+                    "url": "https://static.arcgis.com/images/Symbols/Shapes/BlackStarLargeB.png",
+                    "width": "30px",
+                    "height": "30px"
+                },
+                "labelSymbol": {
+                    "type": "text",
+                    "color": [
+                        100,
+                        100,
+                        100,
+                        255
+                    ],
+                    "font": {
+                        "size": 24
+                    }
+                }
+            }
+
+        Returns:
+            int, dict: return the status code and the added drawing information
+        """
+        return  self.api_wrapper.add_drawing(drawing)
+
+    def remove_drawing(self, drawing_id):
+        """remove the drawing according to the drawing id
+
+        Args:
+            drawing_id (str): the drawing id to remove
+
+        Returns:
+            int, dict: return the status code and the result of removing
+        """
+        return self.api_wrapper.remove_drawing(drawing_id)
+
+    def clear_drawings(self):
+        """clear all drawings
+
+        Returns:
+            int, dict: return the status code and the result of clearing drawings
+        """
+        return self.api_wrapper.clear_drawings()
+
+    def get_workspace(self):
+        """get the current workspace
+
+        Returns:
+            int, dict: return the status code and the workspace information
+        """
+        return self.api_wrapper.get_workspace()
+
+    def import_workspace(self, workspace_info):
+        """import the target workspace
+
+        Args:
+            workspace_info (dict): the target workspace information
+            example of workspace info:
+            {
+                "url":"http://localhost:6080/workspace.zip",
+                "path":"C:\\Users\\Administrator\\Desktop\\workspace.zip",
+            }
+
+        Returns:
+            int, dict: return the status code and the result of importing workspace
+        """
+        return self.api_wrapper.import_workspace(workspace_info)
+
+    def clear_workspace(self):
+        """clear the current workspace
+
+        Returns:
+            int, dict: return the status code and the result of clearing workspace
+        """
+        return self.api_wrapper.clear_workspace()
+
+    def get_snapshot(self):
+        """get the current snapshot of ArcGIS Earth
+
+        Returns:
+            int, dict : return the status code and the request results 
+        """
+        return self.api_wrapper.get_snapshot()

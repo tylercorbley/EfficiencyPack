@@ -1,15 +1,22 @@
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Python.Runtime;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-
 namespace EfficiencyPack
 {
+    public class TopoXYZ
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+    }
     [Transaction(TransactionMode.Manual)]
     public class GoogleEarthTopo : IExternalCommand
     {
@@ -27,71 +34,73 @@ namespace EfficiencyPack
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     string address = form.Address;
-                    int size = Int32.Parse(form.Radius);
-                    int resolution = Int32.Parse(form.Resolution);
+                    double size = Convert.ToDouble(form.Radius); // 100000 * 0.3048;
+                    string sizeStr = Convert.ToString(size).ToString(CultureInfo.InvariantCulture);
+                    //double resolution = Convert.ToDouble(form.Resolution);
+                    string resolution = form.Resolution.ToString(CultureInfo.InvariantCulture);
 
-                    // Call Python script with the address
-                    IList<XYZ> points = CallPythonScript(address, size, resolution);
+                    // Get the path to the user's AppData folder
+                    string appDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-                    // Get the lowest level and a Toposolid type
-                    ElementId levelId = GetLowestLevelId(doc);
-                    ElementId toposolidTypeId = GetToposolidTypeId(doc);
-#if REVIT2023 || REVIT2024
-                    // Create TopoSolid
-                    using (Transaction trans = new Transaction(doc, "Create TopoSolid"))
+                    // Path to the executable you want to run
+                    string exePath = $@"{appDataFolderPath}\Autodesk\Revit\Addins\EfficiencyPack\GoogleEarthTopo\GoogleEarthTopo.exe";
+                    //TaskDialog.Show("test", exePath);
+                    //Clipboard.SetText(exePath);
+                    // Arguments to pass to the executable
+                    string arguments = $"\"{address}\" \"{sizeStr}\" \"{resolution}\"";
+
+                    // Create a new process start info
+                    ProcessStartInfo startInfo = new ProcessStartInfo
                     {
-                        trans.Start();
+                        FileName = exePath,
+                        Arguments = arguments,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true // Hide the window
+                    };
 
-                        Toposolid.Create(doc, points, toposolidTypeId, levelId);
+                    // Start the process
+                    using (Process process = Process.Start(startInfo))
+                    {
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
+                        process.WaitForExit();
+                        int exitCode = process.ExitCode;
 
-                        trans.Commit();
-                    }
+                        // Log output and error streams
+                        //TaskDialog.Show("Debug", $"Output: {output}\nError: {error}\nExit Code: {exitCode}");
+
+                        if (exitCode != 0)
+                        {
+                            TaskDialog.Show("Error", $"Error: {error}\nExit Code: {exitCode}");
+                            return Result.Failed;
+                        }
+
+
+                        // Parse the output into a list of XYZ points
+                        IList<TopoXYZ> points = ParseOutput(output);
+
+                        // Get the lowest level and a Toposolid type
+                        ElementId levelId = GetLowestLevelId(doc);
+                        ElementId toposolidTypeId = GetToposolidTypeId(doc);
+#if REVIT2023||REVIT2024
+                        // Create TopoSolid
+                        using (Transaction trans = new Transaction(doc, "Create TopoSolid"))
+                        {
+                            trans.Start();
+                            List<XYZ> revitPoints = points.Select(p => new XYZ(p.X * 3.28084, p.Y * 3.28084, p.Z * 3.28084)).ToList();
+                            Toposolid.Create(doc, revitPoints, toposolidTypeId, levelId);
+
+                            trans.Commit();
+                        }
 #endif
-                }
-            }
-
-            return Result.Succeeded;
-        }
-
-        private IList<XYZ> CallPythonScript(string address, int size, int resolution)
-        {
-            IList<XYZ> points = new List<XYZ>();
-
-            try
-            {
-                // Initialize Python engine
-                Runtime.PythonDLL = @"C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python39_64\python39.dll";
-                //PythonEngine.PythonPath = @"C:\Python311\Lib\site-packages\pythonnet\runtime\Python.Runtime.dll"; // Specify the path to your Python DLL
-                PythonEngine.Initialize();
-
-                using (Py.GIL())
-                {
-                    dynamic sys = Py.Import("sys");
-                    sys.path.append(@"C:\Users\Tyler\source\repos\EfficiencyPack\PythonApplication1");
-
-                    dynamic module = Py.Import("GoogleEarthTopo");
-                    dynamic coords = module.process_address(address, size, resolution);
-
-                    foreach (var coord in coords)
-                    {
-                        double x = (double)coord[0] * 3.28084; // Convert from meters to feet
-                        double y = (double)coord[1] * 3.28084; // Convert from meters to feet
-                        double z = (double)coord[2] * 3.28084; // Convert from meters to feet
-                        points.Add(new XYZ(x, y, z));
                     }
                 }
 
-                // Shutdown Python engine
-                PythonEngine.Shutdown();
+                return Result.Succeeded;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return points;
         }
-
         private ElementId GetLowestLevelId(Document doc)
         {
             FilteredElementCollector collector = new FilteredElementCollector(doc);
@@ -99,7 +108,6 @@ namespace EfficiencyPack
             Level lowestLevel = levels.OrderBy(level => level.Elevation).FirstOrDefault();
             return lowestLevel?.Id ?? ElementId.InvalidElementId;
         }
-
         private ElementId GetToposolidTypeId(Document doc)
         {
 #if REVIT2023 || REVIT2024
@@ -113,7 +121,38 @@ namespace EfficiencyPack
 #endif
 
         }
+        private IList<TopoXYZ> ParseOutput(string output)
+        {
+            var points = new List<TopoXYZ>();
+            try
+            {
+                // Deserialize the JSON array of arrays into a list of lists
+                var coordinates = JsonConvert.DeserializeObject<List<List<double>>>(output);
 
+                // Convert the list of lists into a list of TopoXYZ objects
+                foreach (var coordinate in coordinates)
+                {
+                    if (coordinate.Count == 3)
+                    {
+                        points.Add(new TopoXYZ
+                        {
+                            X = coordinate[0],
+                            Y = coordinate[1],
+                            Z = coordinate[2]
+                        });
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid coordinate data.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Error", $"Error parsing output: {ex.Message}");
+            }
+            return points;
+        }
         public static String GetMethod()
         {
             var method = MethodBase.GetCurrentMethod().DeclaringType?.FullName;
