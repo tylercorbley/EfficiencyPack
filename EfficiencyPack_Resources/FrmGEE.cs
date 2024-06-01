@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace EfficiencyPack
@@ -80,11 +81,20 @@ namespace EfficiencyPack
             cancelButton.Location = new System.Drawing.Point(100, 110);
             cancelButton.Click += (sender, e) => this.Close();
 
+            // Initialize the register button
+            Button registerButton = new Button();
+            registerButton.Text = "Register";
+            registerButton.Location = new System.Drawing.Point(190, 110);
+            string appDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string setupPath = $@"{appDataFolderPath}\Autodesk\Revit\Addins\EfficiencyPack\GoogleEarthSetup\GoogleEarthSetup.exe";
+            registerButton.Click += (sender, e) => Process.Start(setupPath);
+
             // Add controls to the form
             Controls.Add(addressLabel);
             Controls.Add(addressTextBox);
             Controls.Add(submitButton);
             Controls.Add(cancelButton);
+            Controls.Add(registerButton);
             Controls.Add(sizeLabel);
             Controls.Add(sizeTextBox);
             Controls.Add(resolutionLabel);
