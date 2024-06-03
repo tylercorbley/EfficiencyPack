@@ -47,6 +47,7 @@ namespace EfficiencyPack
             this.Controls.Add(txtSearch);
         }
 
+
         private void PopulateTreeView()
         {
             treeViewTypes.Nodes.Clear();
@@ -58,9 +59,11 @@ namespace EfficiencyPack
                 string systemFamily = entry.systemFamily;
 
                 var familyNode = FindOrCreateNode(treeViewTypes.Nodes, family);
+                familyNode.Tag = (family, null as string, null as string); // Set tag for family node
                 var systemFamilyNode = FindOrCreateNode(familyNode.Nodes, systemFamily);
+                systemFamilyNode.Tag = (family, null as string, systemFamily); // Set tag for system family node
                 var typeNode = systemFamilyNode.Nodes.Add(type);
-                typeNode.Tag = (family, type, systemFamily);
+                typeNode.Tag = (family, type, systemFamily); // Set tag for type node
             }
 
             treeViewTypes.CollapseAll();
@@ -87,10 +90,20 @@ namespace EfficiencyPack
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            selectedTypes.Clear(); // Clear previously selected types before collecting
+
             // Collect selected items
             foreach (TreeNode node in treeViewTypes.Nodes)
             {
                 CollectSelectedNodes(node);
+            }
+
+            // Debugging: Log selected types count
+            Console.WriteLine($"Selected types count: {selectedTypes.Count}");
+
+            if (selectedTypes.Count == 0)
+            {
+                MessageBox.Show("No types selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             this.DialogResult = DialogResult.OK;
@@ -101,10 +114,18 @@ namespace EfficiencyPack
         {
             foreach (TreeNode node in parentNode.Nodes)
             {
-                if (node.Checked)
+                if (node.Checked && node.Tag != null)
                 {
                     var tuple = (ValueTuple<string, string, string>)node.Tag;
-                    selectedTypes.Add(tuple);
+
+                    // Only add to selectedTypes if none of the tuple elements are null
+                    if (!string.IsNullOrEmpty(tuple.Item1) && !string.IsNullOrEmpty(tuple.Item2) && !string.IsNullOrEmpty(tuple.Item3))
+                    {
+                        selectedTypes.Add(tuple);
+
+                        // Debugging: Log the selected node's details
+                        Console.WriteLine($"Selected node: {tuple.Item1}, {tuple.Item2}, {tuple.Item3}");
+                    }
                 }
 
                 // Recursively collect selected nodes

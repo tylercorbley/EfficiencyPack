@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace EfficiencyPack
@@ -22,12 +24,16 @@ namespace EfficiencyPack
                 uiApp = commandData.Application;
                 UIDocument uidoc = uiApp.ActiveUIDocument;
                 Document doc = uidoc.Document;
+                // Start the background thread to handle duplicate type dialogs
+                AutoClickOkOnDuplicateTypes();
 
                 // Open a dialog to select the source Revit file
                 var openFileDialog = new System.Windows.Forms.OpenFileDialog();
                 openFileDialog.Filter = "Revit Files (*.rvt)|*.rvt";
                 openFileDialog.Title = "Select Source Revit File";
                 openFileDialog.Multiselect = false;
+
+
 
                 if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -207,5 +213,40 @@ namespace EfficiencyPack
         {
             return MethodBase.GetCurrentMethod().DeclaringType?.FullName;
         }
+        private void AutoClickOkOnDuplicateTypes()
+        {
+            new Thread(() =>
+            {
+                while (true)
+                {
+                    IntPtr dialogHandle = NativeMethods.FindWindow(null, "Duplicate Types");
+                    if (dialogHandle != IntPtr.Zero)
+                    {
+                        IntPtr okButtonHandle = NativeMethods.FindWindowEx(dialogHandle, IntPtr.Zero, "Button", "OK");
+                        if (okButtonHandle != IntPtr.Zero)
+                        {
+                            NativeMethods.PostMessage(okButtonHandle, NativeMethods.BM_CLICK, IntPtr.Zero, IntPtr.Zero);
+                        }
+                    }
+                    Thread.Sleep(500); // Check every 500 ms
+                }
+            })
+            { IsBackground = true }.Start();
+        }
+
+    }
+    public static class NativeMethods
+    {
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        public const uint BM_CLICK = 0x00F5;
     }
 }
