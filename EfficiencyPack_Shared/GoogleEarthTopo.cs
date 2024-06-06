@@ -34,6 +34,12 @@ namespace EfficiencyPack
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     string address = form.Address;
+                    // Check if the address is null or empty
+                    if (string.IsNullOrWhiteSpace(address))
+                    {
+                        MessageBox.Show("Please enter a valid address.", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return Result.Failed; // Exit the command early
+                    }
                     double size = Convert.ToDouble(form.Radius); // 100000 * 0.3048;
                     string sizeStr = Convert.ToString(size).ToString(CultureInfo.InvariantCulture);
                     //double resolution = Convert.ToDouble(form.Resolution);
