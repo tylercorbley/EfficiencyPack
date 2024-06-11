@@ -33,6 +33,7 @@ namespace EfficiencyPack
             ElementId elementId = GetCurrentViewId(uiDoc);
 
             List<string> viewTemplateNames = GetElevationViewTemplateNames(doc);
+            viewTemplateNames.Sort();
             FrmIntElev formIntElev = new FrmIntElev(viewTemplateNames);
             formIntElev.Height = 200;
             formIntElev.Width = 500;

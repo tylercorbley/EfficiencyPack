@@ -59,7 +59,7 @@ namespace EfficiencyPack
             if (door != null)
             {
                 // Get the parameter by name
-                Parameter insetParam = door.LookupParameter("Mark");
+                Parameter insetParam = door.LookupParameter("Frame Type");
 
                 if (insetParam != null && insetParam.StorageType == StorageType.String)
                 {

@@ -31,6 +31,7 @@ namespace EfficiencyPack
             }
             // Retrieve the list of view template names
             List<string> viewTemplateNames = GetAllViewFamilyTypeNames(doc);
+            viewTemplateNames.Sort();
             // 8. get view family types
             FilteredElementCollector vftCollector = new FilteredElementCollector(doc);
             vftCollector.OfClass(typeof(ViewFamilyType));
