@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CenterCeilingGrid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DimensionText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExplodeCAD.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GoogleEarthTopo.cs" />
