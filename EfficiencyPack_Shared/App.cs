@@ -77,6 +77,10 @@ namespace EfficiencyPack
             ButtonDataClass BtnGoogleEarthTopo = new ButtonDataClass("GoogleEarthTopo", "Google Earth\rTopo", GoogleEarthTopo.GetMethod(), IconSelector.SelectIcon(dark, "site_32"), IconSelector.SelectIcon(dark, "site_16"), "Creates a topography based on a region defined in google earth.");
 #endif
             ButtonDataClass BtnAlignViewsOnSheets = new ButtonDataClass("AlignViewsOnSheets", "Align Views\rOn Sheets", AlignViewsOnSheets.GetMethod(), IconSelector.SelectIcon(dark, "center_32"), IconSelector.SelectIcon(dark, "center_16"), "Aligns views across sheets. Select original view, active the tool, then select what you want aligned to the original");
+            ButtonDataClass BtnConfetti = new ButtonDataClass("Deadline", "Deadline", Confetti.GetMethod(), IconSelector.SelectIcon(dark, "cracker_32"), IconSelector.SelectIcon(dark, "cracker_16"), "Push after deadline");
+
+
+
             // 4. Create buttons
             PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
             PushButton myButton1 = panel000.AddItem(BtnForestGen.Data) as PushButton;
@@ -113,11 +117,14 @@ namespace EfficiencyPack
             splitButton2.AddPushButton(BtnDoorFireRating.Data);
             splitButton2.AddPushButton(BtnDoorCMUGWB.Data);
             splitButton2.AddPushButton(BtnDoorStorefrontMark.Data);
-            SplitButtonData splitButtonData4 = new SplitButtonData("Type Importers", "Import\rTypes");
-            SplitButton splitButton4 = panel000.AddItem(splitButtonData4) as SplitButton;
-            splitButton4.AddPushButton(BtnImportViewType.Data);
-            splitButton4.AddPushButton(BtnImportTypes.Data);
+            //SplitButtonData splitButtonData4 = new SplitButtonData("Type Importers", "Import\rTypes");
+            //SplitButton splitButton4 = panel000.AddItem(splitButtonData4) as SplitButton;
+            //splitButton4.AddPushButton(BtnImportViewType.Data);
+            //splitButton4.AddPushButton(BtnImportTypes.Data);
 
+            //6. stack buttons
+            panel000.AddStackedItems(BtnImportViewType.Data, BtnImportTypes.Data, BtnConfetti.Data);
+            //panel000.AddStackedItems(, null);
             return Result.Succeeded;
         }
 

@@ -46,55 +46,13 @@ namespace EfficiencyPack
                 using (Transaction transaction = new Transaction(doc, "Change Dimension Text"))
                 {
                     transaction.Start();
-                    foreach (Dimension dimension in selectedDimensions)
-                    {
-                        if (dimension.NumberOfSegments > 1)
-                        {
-
-                            foreach (DimensionSegment segment in dimension.Segments)
-                            {
-                                // Access and modify properties of each segment
-                                if (segment.ValueOverride != "EQ" && segment.Below != "V.I.F.")
-                                {
-                                    segment.ValueOverride = "EQ";
-                                    segment.Below = null;
-                                }
-                                else if (segment.ValueOverride == "EQ")
-                                {
-                                    segment.ValueOverride = null;
-                                    segment.Below = "V.I.F.";
-                                }
-                                else if (segment.Below == "V.I.F.")
-                                {
-                                    segment.ValueOverride = null;
-                                    segment.Below = null;
-                                }
-                            }
-                        }
-                        else if (dimension.NumberOfSegments == 0)
-                        {
-                            if (dimension.ValueOverride != "EQ" && dimension.Below != "V.I.F.")
-                            {
-                                dimension.ValueOverride = "EQ";
-                                dimension.Below = null;
-                            }
-                            else if (dimension.ValueOverride == "EQ")
-                            {
-                                dimension.ValueOverride = null;
-                                dimension.Below = "V.I.F.";
-                            }
-                            else if (dimension.Below == "V.I.F.")
-                            {
-                                dimension.ValueOverride = null;
-                                dimension.Below = null;
-                            }
-                        }
-                    }
+                    overrideDim(selectedDimensions);
 
                     transaction.Commit();
                 }
 
                 return Result.Succeeded;
+
             }
             catch (System.Exception ex)
             {
@@ -115,6 +73,53 @@ namespace EfficiencyPack
             {
                 // Allow selection of dimensions
                 return true;
+            }
+        }
+        public static void overrideDim(List<Dimension> selectedDimensions)
+        {
+            foreach (Dimension dimension in selectedDimensions)
+            {
+                if (dimension.NumberOfSegments > 1)
+                {
+
+                    foreach (DimensionSegment segment in dimension.Segments)
+                    {
+                        // Access and modify properties of each segment
+                        if (segment.ValueOverride != "EQ" && segment.Below != "V.I.F.")
+                        {
+                            segment.ValueOverride = "EQ";
+                            segment.Below = null;
+                        }
+                        else if (segment.ValueOverride == "EQ")
+                        {
+                            segment.ValueOverride = null;
+                            segment.Below = "V.I.F.";
+                        }
+                        else if (segment.Below == "V.I.F.")
+                        {
+                            segment.ValueOverride = null;
+                            segment.Below = null;
+                        }
+                    }
+                }
+                else if (dimension.NumberOfSegments == 0)
+                {
+                    if (dimension.ValueOverride != "EQ" && dimension.Below != "V.I.F.")
+                    {
+                        dimension.ValueOverride = "EQ";
+                        dimension.Below = null;
+                    }
+                    else if (dimension.ValueOverride == "EQ")
+                    {
+                        dimension.ValueOverride = null;
+                        dimension.Below = "V.I.F.";
+                    }
+                    else if (dimension.Below == "V.I.F.")
+                    {
+                        dimension.ValueOverride = null;
+                        dimension.Below = null;
+                    }
+                }
             }
         }
         public static String GetMethod()

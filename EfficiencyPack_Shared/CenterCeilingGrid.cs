@@ -21,9 +21,9 @@ namespace EfficiencyPack
                 foreach (Element ceiling in ceilings)
                 {
                     CeilingRef ceilingRef = new CeilingRef(doc, ceiling as Ceiling);
-                    var refPlanesCeilings = GetReferencePlane(doc, ceilingRef);   // script 1
-                    var (upAcrossList, indexList) = GetPlanesIndex(refPlanesCeilings); //script 2
-                    ProcessCeilingsAndReferencePlanes(doc, ceilingRef, upAcrossList, indexList, refPlanesCeilings); //script 3
+                    ProcessCeilingsAndReferencePlanes(doc, ceilingRef); //script 3
+                    List<Dimension> testDim = null; //replace with create dimension code
+                    EfficiencyPack.DimensionText.overrideDim(testDim); //change dimension to EQ
                 }
                 mainTransaction.Commit();
             }
@@ -165,10 +165,25 @@ namespace EfficiencyPack
             }
             return (refsPlanesUpAcrossList, refPlanesIndexList);
         }
-        public void ProcessCeilingsAndReferencePlanes(Document doc, CeilingRef ceilingRef, List<List<ReferencePlane>> refsPlanesUpAcrossList, List<List<int>> refPlanesIndexList, List<List<ReferencePlane>> refPlanesCeilings)
+        public void ProcessCeilingsAndReferencePlanes(Document doc, CeilingRef ceilingRef)
         {
+            var refPlanesCeilings = GetReferencePlane(doc, ceilingRef);   // script 1
+            var (refsPlanesUpAcrossList, refPlanesIndexList) = GetPlanesIndex(refPlanesCeilings); //script 2
             // Start of Script 3 __________________________
             List<Dimension> refDimensions = new List<Dimension>();
+            double width = ceilingRef.ceilingWidth;
+            double length = ceilingRef.ceilingLength;
+            string type = ceilingRef.type;
+            length = (length % 2) / 2;
+            if (type.Contains("2x2"))
+            {
+                width = (width % 2) / 2;
+            }
+            else if (type.Contains("2x4"))
+            {
+                width = (width % 4) / 2;
+            }
+            else return;//quit if ceiling doesn't have a 2x4 or 2x2 grid to work off of
 
             for (int i = 0; i < refPlanesIndexList.Count; i++)
             {
@@ -325,6 +340,9 @@ namespace EfficiencyPack
         public int GridCount { get; private set; }
         public string StableRef { get; private set; }
         public Ceiling ceilingObject { get; private set; }
+        public double ceilingWidth { get; private set; }
+        public double ceilingLength { get; private set; }
+        public string type { get; private set; }
         public CeilingRef(Document doc, Ceiling ceiling)
         {
             InitializeCeilingRef(doc, ceiling);
@@ -360,6 +378,35 @@ namespace EfficiencyPack
 
             ceilingObject = ceiling as Ceiling;
 
+            // Get the ceiling type name
+            ElementId typeId = ceiling.GetTypeId();
+            //ElementType ceilingType = doc.GetElement(typeId) as ElementType;
+            string ceilingType = ceiling.LookupParameter("Type Comments").AsString();
+            //type = ceilingType?.Name ?? "Unknown Type";
+            type = ceilingType;
+            // Get the geometry of the ceiling
+            GeometryElement geomElement = ceiling.get_Geometry(new Options());
+
+            foreach (GeometryObject geomObj in geomElement)
+            {
+                if (geomObj is Solid solid)
+                {
+                    // Get the bounding box of the solid
+                    BoundingBoxXYZ bbox = solid.GetBoundingBox();
+
+                    // Calculate width and length
+                    double width = Math.Abs(bbox.Max.X - bbox.Min.X);
+                    double length = Math.Abs(bbox.Max.Y - bbox.Min.Y);
+                    ceilingWidth = width;
+                    ceilingLength = length;
+
+                    // Convert from feet to meters if needed
+                    //info.Width = width;//UnitUtils.ConvertFromInternalUnits(width, UnitTypeId.Meters);
+                    //info.Length = length;//UnitUtils.ConvertFromInternalUnits(length, UnitTypeId.Meters);
+
+                    break; // Assuming the first solid is the main geometry
+                }
+            }
             FillPattern = patternElement.GetFillPattern();
             GridCount = FillPattern.GridCount;
             StableRef = BottomFaceRef.ConvertToStableRepresentation(doc);

@@ -35,10 +35,12 @@ namespace EfficiencyPack
                 Element element = doc.GetElement(id);
                 if (element is Room room)
                 {
-                    rooms.Add(room);
+                    if (room.Area > 10)
+                    {
+                        rooms.Add(room);
+                    }
                 }
             }
-
             // Get all floor types
             FilteredElementCollector floorTypeCollector = new FilteredElementCollector(doc);
             ICollection<Element> floorTypes = floorTypeCollector

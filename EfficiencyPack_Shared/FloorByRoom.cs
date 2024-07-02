@@ -37,7 +37,10 @@ namespace EfficiencyPack
                     Element element = doc.GetElement(id);
                     if (element is Room room)
                     {
-                        selectedRooms.Add(room);
+                        if (room.Area > 10)
+                        {
+                            selectedRooms.Add(room);
+                        }
                     }
                 }
                 FrmFlrRm formFloorRoom = new FrmFlrRm(floorTypeNames);
