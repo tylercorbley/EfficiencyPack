@@ -19,6 +19,7 @@ namespace EfficiencyPack
             foreach (Element ceiling in ceilings)
             {
                 //outstanding things to do: I need to create a consistent means of dimensioning and a means of creating the offset boundary to the location that i want (currently set to 1). i have a bool that will tell us if the side we are looking at is 4' or not, otherwise we can assume 2' and just take the dimension %2/2 (%4/2 if 4'). need to develop a way to determine which orientation we are facing.
+                //CHECK THE HATCH DIRECTION XYZ AND RETURN A BOOL OR SOMETHING from analyzeHatch to see whether you are looking at the Y axis or X axis, coordinate with the class (length vs width) and tie that into the offset dim. I think that will do it.
                 CeilingRef ceilingRef = new CeilingRef(doc, ceiling as Ceiling);
                 string type = ceilingRef.type;
                 //from the forum
@@ -36,22 +37,43 @@ namespace EfficiencyPack
                     tg.Start();
                     //sb.AppendLine("elem  " + elem.Id);
                     //sb.AppendLine();
-                    int i = 0;
                     foreach (var HLine in HatchLines)//align2RefPlane
                     {
-                        int widthOffset = 6;
-                        int lengthOffset = (int)Math.Round(ceilingRef.ceilingLength) / 2;
-                        if (type.Contains("2x2"))
+                        double offset = 0; //item6 is fourFeet and item7 is false in Y direction
+                        bool test5 = HLine.Item7;
+                        if (!HLine.Item7)
                         {
-                            widthOffset = (int)Math.Round(ceilingRef.ceilingWidth) / 2;
+                            if (HLine.Item6)
+                            {
+                                offset = (ceilingRef.ceilingLength % 4) / 2;
+                            }
+                            else
+                            {
+                                offset = (ceilingRef.ceilingLength % 2) / 2;
+                            }
                         }
-                        else if (type.Contains("2x4"))
+                        else
                         {
-                            widthOffset = (int)Math.Round(ceilingRef.ceilingWidth) / 4;
+                            if (HLine.Item6)
+                            {
+                                offset = (ceilingRef.ceilingWidth % 4) / 2;
+                            }
+                            else
+                            {
+                                offset = (ceilingRef.ceilingWidth % 2) / 2;
+                            }
                         }
-                        List<int> cycles = GetOutermostIndices((int)Math.Round(ceilingRef.ceilingWidth), (int)Math.Round(ceilingRef.ceilingLength));//new List<int> { 8, 17, -4, 19 }; //new 
-
-
+                        if (offset < .5)
+                        {
+                            if (HLine.Item6)
+                            {
+                                offset = 2 + offset;
+                            }
+                            else
+                            {
+                                offset = 1 + offset;
+                            }
+                        }
                         ReferencePlane pl = null;
                         using (Transaction t = new Transaction(doc, "CreateRefPlane"))
                         {
@@ -62,8 +84,6 @@ namespace EfficiencyPack
                         }
                         string stableRef = string.Format("{0}:0:{1}", pl.UniqueId, "SURFACE");
                         Reference ref2Plane = Reference.ParseFromStableRepresentation(doc, stableRef);
-                        ReferenceArray test1 = HLine.Item5;
-                        Reference test2 = test1.get_Item(i);
                         using (Transaction t = new Transaction(doc, "align2RefPlane"))
                         {
                             t.Start();
@@ -71,27 +91,24 @@ namespace EfficiencyPack
                             t.Commit();
                         }
 
-                        i++;
-                        using (Transaction t = new Transaction(doc, "MovePlane"))
+                        using (Transaction t = new Transaction(doc, "align to edge"))
                         {
                             t.Start();
                             XYZ corner = null;
-                            var boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, 1);
-                            List<Curve> OffsetLines = new List<Curve>();
-                            OffsetLines.AddRange(boundary.Item2);
-                            foreach (Line cv in OffsetLines)
+                            var boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, offset, offset);
+                            foreach (Line cv in boundary.Item2)
                             {
                                 corner = cv.GetEndPoint(0);
                                 break;
                             }
-                            XYZ translation = HLine.Item3.Subtract(corner); //MovePlane
-                            ElementTransformUtils.MoveElement(doc, pl.Id, translation);
+                            XYZ translation = corner - pl.FreeEnd; //translation
+                            ElementTransformUtils.MoveElement(doc, pl.Id, translation);//move
                             t.Commit();
                         }
-
                         using (Transaction t = new Transaction(doc, "dimension ceiling"))
                         {
                             t.Start();
+                            //doc.Delete(pl.Id);
                             //AddDimensionsToCeiling(doc, ceiling as Ceiling, lengthOffset, widthOffset, ceilingRef, cycles);
                             t.Commit();
                         }
@@ -253,7 +270,7 @@ namespace EfficiencyPack
             {
                 offset = 2;
             }
-            (ReferenceArray refArrayCeilingOffset, List<Curve> curveList) = CreateDetailLinesFromCeiling(doc, ceilingRef, offset);
+            (ReferenceArray refArrayCeilingOffset, List<Curve> curveList) = CreateDetailLinesFromCeiling(doc, ceilingRef, offset, 2);
 
             for (int i = 0; i < refPlanesIndexList.Count; i++)
             {
@@ -620,7 +637,7 @@ namespace EfficiencyPack
             double distance = point1.DistanceTo(point2);
             return distance <= maxDistance;
         }
-        public (ReferenceArray, List<Curve>) CreateDetailLinesFromCeiling(Document doc, CeilingRef ceilingRef, double offsetFeet)
+        public (ReferenceArray, List<Curve>) CreateDetailLinesFromCeiling(Document doc, CeilingRef ceilingRef, double offset2, double lengthOffset)
         {
             ReferenceArray referenceArray = new ReferenceArray();
             List<Curve> curveList = new List<Curve>();
@@ -636,7 +653,7 @@ namespace EfficiencyPack
             }
 
             // Offset the bounding box inside
-            double offset = UnitUtils.ConvertToInternalUnits(offsetFeet, UnitTypeId.Feet); // Offset in feet
+            double offset = UnitUtils.ConvertToInternalUnits(offset2, UnitTypeId.Feet); // Offset in feet
             XYZ min = boundingBox.Min;
             XYZ max = boundingBox.Max;
 
@@ -662,10 +679,10 @@ namespace EfficiencyPack
 
             return (referenceArray, curveList);
         }
-        List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool>> AnalyzeHatch(Element elem, Reference hatchface)
+        List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>> AnalyzeHatch(Element elem, Reference hatchface)
         {
             //check for model surfacepattern
-            List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool>> res = new List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool>>();
+            List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>> res = new List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>>();
             Document doc = elem.Document;
             View activeView = doc.ActiveView;
             PlanarFace face = elem.GetGeometryObjectFromReference(hatchface) as PlanarFace;
@@ -682,10 +699,7 @@ namespace EfficiencyPack
             string StableRef = hatchface.ConvertToStableRepresentation(doc);
             using (Transaction t = new Transaction(doc, "analyse hatch"))
             {
-                //if (!doc.IsModifiable)
-                // {
                 t.Start();
-                //  }
                 for (int hatchindex = 0; hatchindex < _gridCount; hatchindex++)
                 {
                     ReferenceArray _resArr = new ReferenceArray();
@@ -707,7 +721,6 @@ namespace EfficiencyPack
                     double height = elem.get_Parameter(BuiltInParameter.CEILING_HEIGHTABOVELEVEL_PARAM).AsDouble();
                     Level level = doc.GetElement(elem.LevelId) as Level;
                     height = height + level.Elevation;
-                    // 2 or more References => create dimension
                     if (_resArr.Size > 1)
                     {
                         using (SubTransaction st = new SubTransaction(doc))
@@ -720,17 +733,19 @@ namespace EfficiencyPack
                             {
                                 fourFeet = true;
                             }
-                            // move dimension a tiny amount to orient the dimension perpendicular to the hatchlines
-                            // I can't say why it works, but it does.
+                            bool dir = false;
                             ElementTransformUtils.MoveElement(doc, _dimension.Id, new XYZ(.1, 0, 0));
 
                             Reference r1 = _dimension.References.get_Item(0);
                             XYZ direction = (_dimension.Curve as Line).Direction;
                             XYZ hatchDirection = direction.CrossProduct(face.FaceNormal).Normalize();
+                            if (hatchDirection.X == 0)
+                            {
+                                dir = true;
+                            }
                             XYZ origin = _dimension.Origin.Subtract(direction.Multiply((double)_dimension.Value / 2));
-                            res.Add(new Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool>(hatchindex, r1, origin, hatchDirection, _resArr, fourFeet));
+                            res.Add(new Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>(hatchindex, r1, origin, hatchDirection, _resArr, fourFeet, dir));
                             st.RollBack();
-
                         }
                     }
                 }
@@ -758,6 +773,7 @@ namespace EfficiencyPack
         public double ceilingWidth { get; private set; }
         public double ceilingLength { get; private set; }
         public string type { get; private set; }
+        public XYZ centerPoint { get; private set; }
         public CeilingRef(Document doc, Ceiling ceiling)
         {
             InitializeCeilingRef(doc, ceiling);
@@ -821,7 +837,7 @@ namespace EfficiencyPack
                     double length = Math.Abs(bbox.Max.Y - bbox.Min.Y);
                     ceilingWidth = width;
                     ceilingLength = length;
-
+                    centerPoint = (bbox.Min + bbox.Max) / 2;
                     // Convert from feet to meters if needed
                     //info.Width = width;//UnitUtils.ConvertFromInternalUnits(width, UnitTypeId.Meters);
                     //info.Length = length;//UnitUtils.ConvertFromInternalUnits(length, UnitTypeId.Meters);
