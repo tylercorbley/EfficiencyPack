@@ -120,7 +120,7 @@ namespace EfficiencyPack
                     }
                 }
             }
-            if (offset < .5)
+            if (offset < .25)
             {
                 if (AreApproximatelyEqual(offset, 0))
                 {
@@ -193,6 +193,8 @@ namespace EfficiencyPack
                 Line line = lines[i] as Line;
                 Reference HatchRef = null;
                 int j = 0;
+                double height = DimHeight(doc, ceiling);
+
                 while (j < 100)
                 {
                     ReferenceArray _resArr = new ReferenceArray();
@@ -204,7 +206,7 @@ namespace EfficiencyPack
                     Reference alignDim = edges[(i % 2) + 1];
                     if (_resArr.Size > 1)
                     {
-                        Dimension _dimension = doc.Create.NewDimension(doc.ActiveView, Line.CreateBound(XYZ.Zero, new XYZ(.1, 0, 0)), _resArr);//create dimension
+                        Dimension _dimension = doc.Create.NewDimension(doc.ActiveView, Line.CreateBound(new XYZ(0, 0, height), new XYZ(10, 0, height)), _resArr);//create dimension
                         ElementTransformUtils.MoveElement(doc, _dimension.Id, new XYZ(.1, 0, 0));
                         if (!AreApproximatelyEqual(_dimension.Value ?? 0.0, offsetList[i]))
                         {
@@ -428,9 +430,7 @@ namespace EfficiencyPack
                         if (HatchRef == null) continue;
                         _resArr.Append(HatchRef);
                     }
-                    double height = elem.get_Parameter(BuiltInParameter.CEILING_HEIGHTABOVELEVEL_PARAM).AsDouble();
-                    Level level = doc.GetElement(elem.LevelId) as Level;
-                    height = height + level.Elevation;
+                    double height = DimHeight(doc, elem as Ceiling);
                     if (_resArr.Size > 1)
                     {
                         using (SubTransaction st = new SubTransaction(doc))
@@ -463,6 +463,12 @@ namespace EfficiencyPack
                 }
             }
             return res;
+        }
+        public double DimHeight(Document doc, Ceiling elem)
+        {
+            double height = elem.get_Parameter(BuiltInParameter.CEILING_HEIGHTABOVELEVEL_PARAM).AsDouble();
+            Level level = doc.GetElement(elem.LevelId) as Level;
+            return height + level.Elevation;
         }
         public static String GetMethod()
         {
