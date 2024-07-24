@@ -16,74 +16,96 @@ namespace EfficiencyPack
             UIDocument uidoc = commandData.Application.ActiveUIDocument; Document doc = uidoc.Document; List<Element> ceilings = new List<Element>();
             getCeilings(doc, ceilings, uidoc);
             View activeView = doc.ActiveView;
-            using (TransactionGroup tg = new TransactionGroup(doc, "align2RefPlane"))
+            FrmCenterCeilingGrid formCenterCeilingGrid = new FrmCenterCeilingGrid();
+            formCenterCeilingGrid.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            if (formCenterCeilingGrid.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                tg.Start();
-                foreach (Element ceiling in ceilings)
+                using (TransactionGroup tg = new TransactionGroup(doc, "align2RefPlane"))
                 {
-                    CeilingRef ceilingRef = new CeilingRef(doc, ceiling as Ceiling);
-                    string type = ceilingRef.type;
-                    Element elem = ceiling;
-                    Reference r = ceilingRef.BottomFaceRef;
-                    PlanarFace face = ceilingRef.BottomFace;
-                    double offset = 0;
-                    List<double> offsets = new List<double>();
-                    List<bool> dirList = new List<bool>();
-                    var HatchLines = AnalyzeHatch(elem, r);
-                    foreach (var HLine in HatchLines)//align2RefPlane
+                    bool Horizontal = formCenterCeilingGrid.IsHorizontalSelected;
+                    bool Vertical = formCenterCeilingGrid.IsVerticalSelected;
+                    tg.Start();
+                    foreach (Element ceiling in ceilings)
                     {
-                        offset = GridOffset(HLine.Item6, HLine.Item7, ceilingRef); //item6 is fourFeet and item7 is false in Y direction
-                        offsets.Add(offset);
-                        dirList.Add(HLine.Item7);
-                        if (HLine.Item7)
+                        XYZ centerPoint = GetCeilingCenterPoint(ceiling as Ceiling);
+                        CeilingRef ceilingRef = new CeilingRef(doc, ceiling as Ceiling);
+                        string type = ceilingRef.type;
+                        Element elem = ceiling;
+                        Reference r = ceilingRef.BottomFaceRef;
+                        PlanarFace face = ceilingRef.BottomFace;
+                        double offset = 0;
+                        List<double> offsets = new List<double>();
+                        var HatchLines = AnalyzeHatch(elem, r);
+                        foreach (var HLine in HatchLines)//align2RefPlane
                         {
-                            //HLine1 four feet is correct and HLine2 four feet is the inverse
-                        }
-                        else
-                        {
-                            //Hline1 four feet is incorrect and HLine2 four feet is the inverse
-                        }
-                        ReferencePlane pl = null;
-                        using (Transaction t = new Transaction(doc, "CreateRefPlane"))
-                        {
-                            t.Start();
-                            pl = doc.Create.NewReferencePlane(HLine.Item3.Add(HLine.Item4.Multiply(150)), HLine.Item3, face.FaceNormal.Multiply(3), activeView);//CreateRefPlane
-                            pl.Name = string.Format("{0}_{1}", "ref", Guid.NewGuid());
-                            t.Commit();
-                        }
-                        string stableRef = string.Format("{0}:0:{1}", pl.UniqueId, "SURFACE");
-                        Reference ref2Plane = Reference.ParseFromStableRepresentation(doc, stableRef);
-                        using (Transaction t = new Transaction(doc, "align2RefPlane"))
-                        {
-                            t.Start();
-                            doc.Create.NewAlignment(activeView, pl.GetReference(), HLine.Item2); //align2RefPlane
-                            t.Commit();
-                        }
+                            bool useOffsetCenter = (HLine.Item7 && Horizontal) || (!HLine.Item7 && Vertical);
 
-                        using (Transaction t = new Transaction(doc, "align to edge"))
+                            offset = useOffsetCenter
+                                ? GridOffsetCenter(HLine.Item6, HLine.Item7, ceilingRef)
+                                : GridOffset(HLine.Item6, HLine.Item7, ceilingRef);
+                            offsets.Add(offset);
+                            ReferencePlane pl = null;
+                            using (Transaction t = new Transaction(doc, "CreateRefPlane"))
+                            {
+                                t.Start();
+                                pl = doc.Create.NewReferencePlane(HLine.Item3.Add(HLine.Item4.Multiply(150)), HLine.Item3, face.FaceNormal.Multiply(3), activeView);//CreateRefPlane
+                                pl.Name = string.Format("{0}_{1}", "ref", Guid.NewGuid());
+                                t.Commit();
+                            }
+                            string stableRef = string.Format("{0}:0:{1}", pl.UniqueId, "SURFACE");
+                            Reference ref2Plane = Reference.ParseFromStableRepresentation(doc, stableRef);
+                            using (Transaction t = new Transaction(doc, "align2RefPlane"))
+                            {
+                                t.Start();
+                                doc.Create.NewAlignment(activeView, pl.GetReference(), HLine.Item2); //align2RefPlane
+                                t.Commit();
+                            }
+
+                            using (Transaction t = new Transaction(doc, "align to edge"))
+                            {
+                                t.Start();
+                                XYZ corner = null;
+                                var boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, offset);
+                                foreach (Line cv in boundary.Item2)
+                                {
+                                    corner = cv.GetEndPoint(0);
+                                    break;
+                                }
+                                if (HLine.Item7)
+                                {
+                                    if (Horizontal)
+                                    {
+                                        ElementTransformUtils.MoveElement(doc, pl.Id, centerPoint - pl.FreeEnd);//move
+                                    }
+                                    else
+                                    {
+                                        ElementTransformUtils.MoveElement(doc, pl.Id, corner - pl.FreeEnd);//move
+                                    }
+                                }
+                                else
+                                {
+                                    if (Vertical)
+                                    {
+                                        ElementTransformUtils.MoveElement(doc, pl.Id, centerPoint - pl.FreeEnd);//move
+                                    }
+                                    else
+                                    {
+                                        ElementTransformUtils.MoveElement(doc, pl.Id, corner - pl.FreeEnd);//move
+                                    }
+                                }
+                                doc.Delete(pl.Id);
+                                t.Commit();
+                            }
+                        }
+                        using (Transaction t = new Transaction(doc, "dimension ceiling"))
                         {
                             t.Start();
-                            XYZ corner = null;
-                            var boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, offset);
-                            foreach (Line cv in boundary.Item2)
-                            {
-                                corner = cv.GetEndPoint(0);
-                                break;
-                            }
-                            XYZ translation = corner - pl.FreeEnd; //translation
-                            ElementTransformUtils.MoveElement(doc, pl.Id, translation);//move
-                            doc.Delete(pl.Id);
+                            AddDimensionsToCeiling(doc, ceiling as Ceiling, ceilingRef, offsets);
                             t.Commit();
                         }
                     }
-                    using (Transaction t = new Transaction(doc, "dimension ceiling"))
-                    {
-                        t.Start();
-                        AddDimensionsToCeiling(doc, ceiling as Ceiling, ceilingRef, offsets, dirList[0]);
-                        t.Commit();
-                    }
+                    tg.Assimilate();
                 }
-                tg.Assimilate();
             }
             return Result.Succeeded;
         }
@@ -137,6 +159,33 @@ namespace EfficiencyPack
             }
             return offset;
         }
+        public double GridOffsetCenter(bool Item6, bool Item7, CeilingRef ceilingRef)
+        {
+            double offset = 0;
+            if (!Item7)
+            {
+                if (Item6)
+                {
+                    offset = (ceilingRef.ceilingLength / 2) % 4;
+                }
+                else
+                {
+                    offset = (ceilingRef.ceilingLength / 2) % 2;
+                }
+            }
+            else
+            {
+                if (Item6)
+                {
+                    offset = (ceilingRef.ceilingWidth / 2) % 4;
+                }
+                else
+                {
+                    offset = (ceilingRef.ceilingWidth / 2) % 2;
+                }
+            }
+            return offset;
+        }
         public void getCeilings(Document doc, List<Element> ceilings, UIDocument uidoc)
         {
             // Get pre-selected elements
@@ -161,14 +210,12 @@ namespace EfficiencyPack
                 return;
             }
         }
-        public void AddDimensionsToCeiling(Document doc, Ceiling ceiling, CeilingRef ceilingRef, List<double> offsets, bool dir)
+        public void AddDimensionsToCeiling(Document doc, Ceiling ceiling, CeilingRef ceilingRef, List<double> offsets)
         {
+            List<Element> HostedElements = GetHostedElements(doc, ceiling as Element);
+            TranslateSelectedElements(doc, HostedElements, ceilingRef.ceilingLength);
             List<Reference> edges = GetCeilingBoundingEdgeReferences(ceiling);
             int shifter = 1;
-            if (!dir)
-            {
-                shifter = 0;
-            }
             ShiftList(edges, shifter);
             offsets.Add(offsets[0]);
             offsets.Add(offsets[1]);
@@ -194,7 +241,6 @@ namespace EfficiencyPack
                 Reference HatchRef = null;
                 int j = 0;
                 double height = DimHeight(doc, ceiling);
-
                 while (j < 100)
                 {
                     ReferenceArray _resArr = new ReferenceArray();
@@ -203,69 +249,70 @@ namespace EfficiencyPack
                     HatchRef = Reference.ParseFromStableRepresentation(doc, StableHatchString);
                     _resArr.Append(HatchRef);
                     _resArr.Append(edges[i]);
-                    Reference alignDim = edges[(i % 2) + 1];
                     if (_resArr.Size > 1)
                     {
                         Dimension _dimension = doc.Create.NewDimension(doc.ActiveView, Line.CreateBound(new XYZ(0, 0, height), new XYZ(10, 0, height)), _resArr);//create dimension
                         ElementTransformUtils.MoveElement(doc, _dimension.Id, new XYZ(.1, 0, 0));
                         if (!AreApproximatelyEqual(_dimension.Value ?? 0.0, offsetList[i]))
                         {
+                            if (AreApproximatelyEqual(_dimension.Value ?? 0.0, offsets[i]))
+                            {
+                                _dimension.ValueOverride = "EQ";// Override the dimension text with "EQ"
+                                ElementTransformUtils.MoveElement(doc, _dimension.Id, GetCeilingCenterPoint(ceiling) - _dimension.Origin);
+                                break;
+                            }
                             doc.Delete(_dimension.Id);
                         }
                         else
                         {
                             _dimension.ValueOverride = "EQ";// Override the dimension text with "EQ"
-                            AlignDimensionToReference(doc, _dimension, alignDim);
+                            ElementTransformUtils.MoveElement(doc, _dimension.Id, GetCeilingCenterPoint(ceiling) - _dimension.Origin);
                             break;
                         }
                     }
                     j++;
                 }
             }
+            TranslateSelectedElements(doc, HostedElements, -ceilingRef.ceilingLength);
         }
-        public static void AlignDimensionToReference(Document doc, Dimension dimension, Reference alignmentReference)
+        public List<Element> GetHostedElements(Document doc, Element hostElement)
         {
-            // Get the geometry object from the reference
-            GeometryObject geomObj = doc.GetElement(alignmentReference).GetGeometryObjectFromReference(alignmentReference);
+            List<Element> hostedElements = new List<Element>();
 
-            if (geomObj is Edge edge)
+            if (hostElement == null)
+                return hostedElements;
+
+            // Get all family instances in the document
+            FilteredElementCollector collector = new FilteredElementCollector(doc)
+                .OfClass(typeof(FamilyInstance));
+
+            foreach (FamilyInstance famInstance in collector)
             {
-                Curve curve = edge.AsCurve();
-                AlignDimensionToCurve(doc, dimension, curve);
+                // Check if the family instance is hosted
+                Element host = famInstance.Host;
+                if (host != null && host.Id == hostElement.Id)
+                {
+                    hostedElements.Add(famInstance);
+                }
             }
-            else if (geomObj is Curve curve)
-            {
-                AlignDimensionToCurve(doc, dimension, curve);
-            }
-            else
-            {
-                // Handle case where reference is not an edge or curve
-                TaskDialog.Show("Error", "The provided reference is not an edge or curve.");
-            }
+
+            return hostedElements;
         }
-        private static void AlignDimensionToCurve(Document doc, Dimension dimension, Curve alignmentCurve)
+        public void TranslateSelectedElements(Document document, List<Element> selectedElements, double distanceZ)
         {
-            // Get the current line of the dimension
-            Line dimLine = dimension.Curve as Line;
-            if (dimLine == null)
+
+            if (selectedElements.Count == 0)
             {
-                TaskDialog.Show("Error", "The dimension is not linear.");
+                //TaskDialog.Show("Translate Elements", "No elements selected.");
                 return;
             }
 
-            // Get the start and end points of the alignment curve
-            XYZ curveStart = alignmentCurve.GetEndPoint(0);
-            XYZ curveEnd = alignmentCurve.GetEndPoint(1);
+            XYZ translationVector = new XYZ(0, distanceZ, 0);
 
-            // Project these points onto the dimension line
-            XYZ projectedStart = dimLine.Project(curveStart).XYZPoint;
-            XYZ projectedEnd = dimLine.Project(curveEnd).XYZPoint;
-
-            // Calculate the move vector
-            XYZ moveVector = curveStart - projectedStart;
-
-            // Move the dimension
-            ElementTransformUtils.MoveElement(doc, dimension.Id, moveVector);
+            foreach (Element element in selectedElements)
+            {
+                ElementTransformUtils.MoveElement(document, element.Id, translationVector);
+            }
         }
         public List<Reference> GetCeilingBoundingEdgeReferences(Ceiling ceiling)
         {
@@ -470,12 +517,33 @@ namespace EfficiencyPack
             Level level = doc.GetElement(elem.LevelId) as Level;
             return height + level.Elevation;
         }
+        public XYZ GetCeilingCenterPoint(Ceiling ceiling)
+        {
+            if (ceiling == null)
+            {
+                throw new ArgumentNullException(nameof(ceiling), "Ceiling cannot be null.");
+            }
+
+            // Get the ceiling's bounding box in model coordinates
+            BoundingBoxXYZ boundingBox = ceiling.get_BoundingBox(null);
+
+            if (boundingBox == null)
+            {
+                throw new InvalidOperationException("Unable to retrieve ceiling bounding box.");
+            }
+
+            // Calculate the center point
+            XYZ centerPoint = (boundingBox.Min + boundingBox.Max) * 0.5;
+
+            return centerPoint;
+        }
         public static String GetMethod()
         {
             var method = MethodBase.GetCurrentMethod().DeclaringType?.FullName;
             return method;
         }
     }
+
     public class CeilingRef
     {
         public HostObject HostObject { get; private set; }
@@ -492,11 +560,11 @@ namespace EfficiencyPack
         public double ceilingLength { get; private set; }
         public string type { get; private set; }
         public XYZ centerPoint { get; private set; }
+        public bool dir { get; private set; }
         public CeilingRef(Document doc, Ceiling ceiling)
         {
             InitializeCeilingRef(doc, ceiling);
         }
-
         private void InitializeCeilingRef(Document doc, Ceiling ceiling)
         {
             HostObject = ceiling as HostObject;
@@ -542,7 +610,7 @@ namespace EfficiencyPack
             type = ceilingType;
             // Get the geometry of the ceiling
             GeometryElement geomElement = ceiling.get_Geometry(new Options());
-
+            CurveArray curveArray = new CurveArray();
             foreach (GeometryObject geomObj in geomElement)
             {
                 if (geomObj is Solid solid)
@@ -556,6 +624,12 @@ namespace EfficiencyPack
                     ceilingWidth = width;
                     ceilingLength = length;
                     centerPoint = (bbox.Min + bbox.Max) / 2;
+                    foreach (Edge edge in solid.Edges)
+                    {
+                        curveArray.Append(edge.AsCurve());
+                    }
+                    Curve firstCurve = curveArray.get_Item(0);
+                    dir = CenterCeilingGrid.AreApproximatelyEqual(firstCurve.Length, ceilingWidth);
                     // Convert from feet to meters if needed
                     //info.Width = width;//UnitUtils.ConvertFromInternalUnits(width, UnitTypeId.Meters);
                     //info.Length = length;//UnitUtils.ConvertFromInternalUnits(length, UnitTypeId.Meters);

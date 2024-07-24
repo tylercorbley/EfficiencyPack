@@ -149,6 +149,12 @@
     <Compile Include="FrmExplodeCAD.Designer.cs">
       <DependentUpon>FrmExplodeCAD.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmCenterCeilingGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmCenterCeilingGrid.Designer.cs">
+      <DependentUpon>FrmCenterCeilingGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmRmPlan.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -183,6 +189,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmExplodeCAD.resx">
       <DependentUpon>FrmExplodeCAD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmCenterCeilingGrid.resx">
+      <DependentUpon>FrmCenterCeilingGrid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmRmPlan.resx">
       <DependentUpon>FrmRmPlan.cs</DependentUpon>
