@@ -7,8 +7,12 @@ namespace EfficiencyPack
     {
         private CheckBox checkBox1;
         private CheckBox checkBox2;
+        private CheckBox checkBox3;
+        private CheckBox checkBox4;
         private Label label1;
         private Label label2;
+        private Label label4;
+        private Label label5;
 
         public FrmCenterCeilingGrid()
         {
@@ -24,13 +28,13 @@ namespace EfficiencyPack
             checkBox1.Size = new System.Drawing.Size(20, 20);
 
             label1 = new Label();
-            label1.Location = new System.Drawing.Point(50, 42);
+            label1.Location = new System.Drawing.Point(50, 43);
             label1.Size = new System.Drawing.Size(200, 20);
             label1.Text = "Vertically center a grid line";
 
             // Create and set up the second checkbox and label
             checkBox2 = new CheckBox();
-            checkBox2.Location = new System.Drawing.Point(20, 70);
+            checkBox2.Location = new System.Drawing.Point(20, 65);
             checkBox2.Size = new System.Drawing.Size(20, 30);
 
             label2 = new Label();
@@ -38,15 +42,41 @@ namespace EfficiencyPack
             label2.Size = new System.Drawing.Size(200, 20);
             label2.Text = "Horizontally center a grid line";
 
+            // Create and set up the third checkbox and label
+            checkBox3 = new CheckBox();
+            checkBox3.Location = new System.Drawing.Point(20, 90);
+            checkBox3.Size = new System.Drawing.Size(20, 30);
+
+            label4 = new Label();
+            label4.Location = new System.Drawing.Point(50, 97);
+            label4.Size = new System.Drawing.Size(280, 20);
+            label4.Text = "Do you want to center a tile instead of a grid line?";
+
+            // Create and set up the third checkbox and label
+            checkBox4 = new CheckBox();
+            checkBox4.Location = new System.Drawing.Point(20, 120);
+            checkBox4.Size = new System.Drawing.Size(20, 30);
+
+            label5 = new Label();
+            label5.Location = new System.Drawing.Point(50, 127);
+            label5.Size = new System.Drawing.Size(280, 20);
+            label5.Text = "Do you want to dimension the ceiling tiles?";
+
             // Add the controls to the form
             this.Controls.Add(checkBox1);
             this.Controls.Add(checkBox2);
+            this.Controls.Add(checkBox3);
+            this.Controls.Add(checkBox4);
             this.Controls.Add(label1);
             this.Controls.Add(label2);
+            this.Controls.Add(label4);
+            this.Controls.Add(label5);
         }
 
         public bool IsVerticalSelected { get; private set; }
         public bool IsHorizontalSelected { get; private set; }
+        public bool IsGridSelected { get; private set; }
+        public bool DimensionTiles { get; private set; }
 
         private void btnCancel_Click(object sender, System.EventArgs e)
         {
@@ -62,6 +92,8 @@ namespace EfficiencyPack
         {
             IsVerticalSelected = checkBox1.Checked;
             IsHorizontalSelected = checkBox2.Checked;
+            IsGridSelected = checkBox3.Checked;
+            DimensionTiles = checkBox4.Checked;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

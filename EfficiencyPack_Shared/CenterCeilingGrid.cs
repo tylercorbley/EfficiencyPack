@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Line = Autodesk.Revit.DB.Line;
+using Reference = Autodesk.Revit.DB.Reference;
+using String = System.String;
+using View = Autodesk.Revit.DB.View;
 
 namespace EfficiencyPack
 {
@@ -24,9 +28,18 @@ namespace EfficiencyPack
                 {
                     bool Horizontal = formCenterCeilingGrid.IsHorizontalSelected;
                     bool Vertical = formCenterCeilingGrid.IsVerticalSelected;
+                    bool gridOrTile = formCenterCeilingGrid.IsGridSelected;
+                    double rotationAngle = 0;
+                    Line rotationAxis = null;
                     tg.Start();
                     foreach (Element ceiling in ceilings)
                     {
+                        using (Transaction t = new Transaction(doc, "rotate ceiling"))
+                        {
+                            t.Start();
+                            (rotationAxis, rotationAngle) = RotateCeilingAroundCenterPoint(doc, ceiling as Ceiling);
+                            t.Commit();
+                        }
                         XYZ centerPoint = GetCeilingCenterPoint(ceiling as Ceiling);
                         CeilingRef ceilingRef = new CeilingRef(doc, ceiling as Ceiling);
                         string type = ceilingRef.type;
@@ -41,9 +54,10 @@ namespace EfficiencyPack
                             bool useOffsetCenter = (HLine.Item7 && Horizontal) || (!HLine.Item7 && Vertical);
 
                             offset = useOffsetCenter
-                                ? GridOffsetCenter(HLine.Item6, HLine.Item7, ceilingRef)
+                                ? GridOffsetCenter(HLine.Item6, HLine.Item7, ceilingRef, gridOrTile)
                                 : GridOffset(HLine.Item6, HLine.Item7, ceilingRef);
                             offsets.Add(offset);
+
                             ReferencePlane pl = null;
                             using (Transaction t = new Transaction(doc, "CreateRefPlane"))
                             {
@@ -65,34 +79,13 @@ namespace EfficiencyPack
                             {
                                 t.Start();
                                 XYZ corner = null;
-                                var boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, offset);
-                                foreach (Line cv in boundary.Item2)
+                                List<Curve> boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, offset);
+                                foreach (Line cv in boundary)
                                 {
                                     corner = cv.GetEndPoint(0);
                                     break;
                                 }
-                                if (HLine.Item7)
-                                {
-                                    if (Horizontal)
-                                    {
-                                        ElementTransformUtils.MoveElement(doc, pl.Id, centerPoint - pl.FreeEnd);//move
-                                    }
-                                    else
-                                    {
-                                        ElementTransformUtils.MoveElement(doc, pl.Id, corner - pl.FreeEnd);//move
-                                    }
-                                }
-                                else
-                                {
-                                    if (Vertical)
-                                    {
-                                        ElementTransformUtils.MoveElement(doc, pl.Id, centerPoint - pl.FreeEnd);//move
-                                    }
-                                    else
-                                    {
-                                        ElementTransformUtils.MoveElement(doc, pl.Id, corner - pl.FreeEnd);//move
-                                    }
-                                }
+                                ElementTransformUtils.MoveElement(doc, pl.Id, corner - pl.FreeEnd);
                                 doc.Delete(pl.Id);
                                 t.Commit();
                             }
@@ -100,7 +93,11 @@ namespace EfficiencyPack
                         using (Transaction t = new Transaction(doc, "dimension ceiling"))
                         {
                             t.Start();
-                            AddDimensionsToCeiling(doc, ceiling as Ceiling, ceilingRef, offsets);
+                            if (formCenterCeilingGrid.DimensionTiles)
+                            {
+                                AddDimensionsToCeiling(doc, ceiling as Ceiling, ceilingRef, offsets);
+                            }
+                            ElementTransformUtils.RotateElement(doc, ceiling.Id, rotationAxis, -rotationAngle);
                             t.Commit();
                         }
                     }
@@ -108,6 +105,49 @@ namespace EfficiencyPack
                 }
             }
             return Result.Succeeded;
+        }
+        public (Line, double) RotateCeilingAroundCenterPoint(Document doc, Ceiling ceiling)
+        {
+            Reference BottomFaceRef = HostObjectUtils.GetBottomFaces(ceiling as HostObject).FirstOrDefault();
+            // Get the bottom face of the ceiling
+            Face bottomFace = ceiling.GetGeometryObjectFromReference(BottomFaceRef) as Face;
+            EdgeArrayArray EAA = bottomFace.EdgeLoops;
+            EdgeArray EA = EAA.get_Item(0);
+            Edge E = EA.get_Item(0);
+            Curve curve = E.AsCurve();
+            Line line = curve as Line;
+            ReferencePlane edgePlane = doc.Create.NewReferencePlane(line.GetEndPoint(0), line.GetEndPoint(1), XYZ.BasisZ, doc.ActiveView);
+
+            // Compute the center point of the ceiling
+            XYZ centerPoint = GetFaceCenter(bottomFace);
+
+            // Create a point 10 units along the X-axis from the center point
+            XYZ pointXPlus10 = new XYZ(centerPoint.X + 10, centerPoint.Y, centerPoint.Z);
+            // Create the reference plane
+            ReferencePlane referencePlane = doc.Create.NewReferencePlane(centerPoint, pointXPlus10, XYZ.BasisZ, doc.ActiveView);
+
+            // Calculate the rotation angle to align the ceiling parallel with the reference plane
+            Line rotationAxis = Line.CreateBound(centerPoint, new XYZ(centerPoint.X, centerPoint.Y, centerPoint.Z + 10));
+            double rotationAngle = CalculateRotationAngle(edgePlane, referencePlane);
+            // Rotate the ceiling around the center point
+            ElementTransformUtils.RotateElement(doc, ceiling.Id, rotationAxis, rotationAngle);
+            doc.Delete(referencePlane.Id);
+            doc.Delete(edgePlane.Id);
+            return (rotationAxis, rotationAngle);
+        }
+        private XYZ GetFaceCenter(Face face)
+        {
+            BoundingBoxUV bb = face.GetBoundingBox();
+            UV centerUV = (bb.Min + bb.Max) / 2;
+            return face.Evaluate(centerUV);
+        }
+        private double CalculateRotationAngle(ReferencePlane edgePlane, ReferencePlane referencePlane)
+        {
+            // Assuming the face normal is pointing upward, we need to align it with the reference plane normal
+            XYZ refPlaneNormal = referencePlane.GetPlane().Normal;
+            XYZ edgePlaneNormal = edgePlane.GetPlane().Normal;
+
+            return edgePlaneNormal.AngleTo(refPlaneNormal);
         }
         public double GridOffset(bool Item6, bool Item7, CeilingRef ceilingRef)
         {
@@ -121,9 +161,13 @@ namespace EfficiencyPack
                 else
                 {
                     offset = (ceilingRef.ceilingLength % 2) / 2;
+                    if (AreApproximatelyEqual(offset, 0))
+                    {
+                        offset = 2;
+                    }
                     if (AreApproximatelyEqual(offset, 1))
                     {
-                        offset = 0;
+                        offset = 2;
                     }
                 }
             }
@@ -136,9 +180,13 @@ namespace EfficiencyPack
                 else
                 {
                     offset = (ceilingRef.ceilingWidth % 2) / 2;
+                    if (AreApproximatelyEqual(offset, 0))
+                    {
+                        offset = 2;
+                    }
                     if (AreApproximatelyEqual(offset, 1))
                     {
-                        offset = 0;
+                        offset = 2;
                     }
                 }
             }
@@ -159,7 +207,7 @@ namespace EfficiencyPack
             }
             return offset;
         }
-        public double GridOffsetCenter(bool Item6, bool Item7, CeilingRef ceilingRef)
+        public double GridOffsetCenter(bool Item6, bool Item7, CeilingRef ceilingRef, bool gridOrTile)
         {
             double offset = 0;
             if (!Item7)
@@ -167,10 +215,18 @@ namespace EfficiencyPack
                 if (Item6)
                 {
                     offset = (ceilingRef.ceilingLength / 2) % 4;
+                    if (gridOrTile)
+                    {
+                        offset = (offset + 2) % 4;
+                    }
                 }
                 else
                 {
                     offset = (ceilingRef.ceilingLength / 2) % 2;
+                    if (gridOrTile)
+                    {
+                        offset = (offset + 1) % 2;
+                    }
                 }
             }
             else
@@ -178,10 +234,18 @@ namespace EfficiencyPack
                 if (Item6)
                 {
                     offset = (ceilingRef.ceilingWidth / 2) % 4;
+                    if (gridOrTile)
+                    {
+                        offset = (offset + 2) % 4;
+                    }
                 }
                 else
                 {
                     offset = (ceilingRef.ceilingWidth / 2) % 2;
+                    if (gridOrTile)
+                    {
+                        offset = (offset + 1) % 2;
+                    }
                 }
             }
             return offset;
@@ -234,9 +298,9 @@ namespace EfficiencyPack
                 int _gridCount = pattern.GridCount;
                 // construct StableRepresentations and find the Reference to HatchLines
                 string StableRef = top.ConvertToStableRepresentation(doc);
-                var boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, offsets[i]);
+                List<Curve> boundary = CreateDetailLinesFromCeiling(doc, ceilingRef, offsets[i]);
                 List<Curve> lines = new List<Curve>();
-                lines.AddRange(boundary.Item2);
+                lines.AddRange(boundary);
                 Line line = lines[i] as Line;
                 Reference HatchRef = null;
                 int j = 0;
@@ -395,8 +459,40 @@ namespace EfficiencyPack
 
             return list.Skip(list.Count - shiftBy).Concat(list.Take(list.Count - shiftBy)).ToList();
         }
-        public (ReferenceArray, List<Curve>) CreateDetailLinesFromCeiling(Document doc, CeilingRef ceilingRef, double offset2)
+        public List<Curve> OffsetCeilingSketchLines(Document doc, CeilingRef ceilingRef, double offset)
         {
+            List<Curve> offsetCurves = new List<Curve>();
+
+            // Get the edge loops of the bottom face of the ceiling
+            EdgeArrayArray edgeArrayArray = ceilingRef.BottomFace.EdgeLoops;
+
+            foreach (EdgeArray edgeArray in edgeArrayArray)
+            {
+                CurveLoop curveLoop = new CurveLoop();
+
+                // Convert edge array to curve loop
+                foreach (Edge edge in edgeArray)
+                {
+                    Curve curve = edge.AsCurve();
+                    curveLoop.Append(curve);
+                }
+
+                // Offset the curve loop
+                CurveLoop offsetCurveLoop = CurveLoop.CreateViaOffset(curveLoop, offset, XYZ.BasisZ);
+
+                // Add the offset curves to the list
+                foreach (Curve curve in offsetCurveLoop)
+                {
+                    // doc.Create.NewDetailCurve(doc.ActiveView, curve);
+                    offsetCurves.Add(curve);
+                }
+            }
+
+            return offsetCurves;
+        }
+        public List<Curve> CreateDetailLinesFromCeiling(Document doc, CeilingRef ceilingRef, double offset2)
+        {
+
             ReferenceArray referenceArray = new ReferenceArray();
             List<Curve> curveList = new List<Curve>();
             // Get the active view
@@ -407,7 +503,7 @@ namespace EfficiencyPack
             if (boundingBox == null)
             {
                 TaskDialog.Show("Error", "Bounding box of the ceiling could not be determined.");
-                return (null, null);
+                return (null);
             }
 
             // Offset the bounding box inside
@@ -436,10 +532,20 @@ namespace EfficiencyPack
                 doc.Delete(detailCurve.Id);
             }
 
-            return (referenceArray, curveList);
+            return (curveList);
         }
         List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>> AnalyzeHatch(Element elem, Reference hatchface)
         {
+            int ceilingHatchMin = 0;
+            int ceilingHatchMax = 2;
+            if (elem.Name.Contains("NRC High") || elem.Name.Contains("NRC Medium"))
+            {
+                ceilingHatchMin = 1; ceilingHatchMax = 3;
+            }
+            else if (elem.Name.Contains("Clean Room") || elem.Name.Contains("WOOD_LAY IN"))
+            {
+                ceilingHatchMin = 2; ceilingHatchMax = 4;
+            }
             //check for model surfacepattern
             List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>> res = new List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>>();
             Document doc = elem.Document;
@@ -459,7 +565,7 @@ namespace EfficiencyPack
             using (Transaction t = new Transaction(doc, "analyse hatch"))
             {
                 t.Start();
-                for (int hatchindex = 0; hatchindex < _gridCount; hatchindex++)
+                for (int hatchindex = ceilingHatchMin; hatchindex < ceilingHatchMax; hatchindex++)
                 {
                     ReferenceArray _resArr = new ReferenceArray();
                     for (int ip = 0; ip < 2; ip++)
@@ -495,9 +601,9 @@ namespace EfficiencyPack
                                 dir = true;
                             }
                             bool fourFeet = false;
-                            if (elem.Name.Contains("2x4"))
+                            if (elem.Name.Contains("2x4") || elem.Name.Contains("LAY IN"))
                             {
-                                if (_dimension.Value == 4)
+                                if (AreApproximatelyEqual(_dimension.Value ?? 0.0, 4))
                                 {
                                     fourFeet = true;
                                 }
@@ -543,7 +649,6 @@ namespace EfficiencyPack
             return method;
         }
     }
-
     public class CeilingRef
     {
         public HostObject HostObject { get; private set; }
@@ -611,6 +716,9 @@ namespace EfficiencyPack
             // Get the geometry of the ceiling
             GeometryElement geomElement = ceiling.get_Geometry(new Options());
             CurveArray curveArray = new CurveArray();
+            EdgeArrayArray edgeArrayArray = BottomFace.EdgeLoops;
+            EdgeArray edgeArray = edgeArrayArray.get_Item(0);
+
             foreach (GeometryObject geomObj in geomElement)
             {
                 if (geomObj is Solid solid)
