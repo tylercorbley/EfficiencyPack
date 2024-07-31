@@ -17,7 +17,7 @@ namespace EfficiencyPack
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            UIDocument uidoc = commandData.Application.ActiveUIDocument; Document doc = uidoc.Document; List<Element> ceilings = new List<Element>();
+            UIDocument uidoc = commandData.Application.ActiveUIDocument; Autodesk.Revit.DB.Document doc = uidoc.Document; List<Element> ceilings = new List<Element>();
             getCeilings(doc, ceilings, uidoc);
             View activeView = doc.ActiveView;
             FrmCenterCeilingGrid formCenterCeilingGrid = new FrmCenterCeilingGrid();
@@ -28,18 +28,13 @@ namespace EfficiencyPack
                 {
                     bool Horizontal = formCenterCeilingGrid.IsHorizontalSelected;
                     bool Vertical = formCenterCeilingGrid.IsVerticalSelected;
-                    bool gridOrTile = formCenterCeilingGrid.IsGridSelected;
                     double rotationAngle = 0;
                     Line rotationAxis = null;
                     tg.Start();
                     foreach (Element ceiling in ceilings)
                     {
-                        using (Transaction t = new Transaction(doc, "rotate ceiling"))
-                        {
-                            t.Start();
-                            (rotationAxis, rotationAngle) = RotateCeilingAroundCenterPoint(doc, ceiling as Ceiling);
-                            t.Commit();
-                        }
+
+                        (rotationAxis, rotationAngle) = RotateCeilingAroundCenterPoint(doc, ceiling as Ceiling);
                         XYZ centerPoint = GetCeilingCenterPoint(ceiling as Ceiling);
                         CeilingRef ceilingRef = new CeilingRef(doc, ceiling as Ceiling);
                         string type = ceilingRef.type;
@@ -53,9 +48,8 @@ namespace EfficiencyPack
                         {
                             bool useOffsetCenter = (HLine.Item7 && Horizontal) || (!HLine.Item7 && Vertical);
 
-                            offset = useOffsetCenter
-                                ? GridOffsetCenter(HLine.Item6, HLine.Item7, ceilingRef, gridOrTile)
-                                : GridOffset(HLine.Item6, HLine.Item7, ceilingRef);
+                            offset = GridOffset(HLine.Item6, HLine.Item7, ceilingRef, useOffsetCenter);
+                            // TileOffset(HLine.Item6, HLine.Item7, ceilingRef);
                             offsets.Add(offset);
 
                             ReferencePlane pl = null;
@@ -97,7 +91,10 @@ namespace EfficiencyPack
                             {
                                 AddDimensionsToCeiling(doc, ceiling as Ceiling, ceilingRef, offsets);
                             }
-                            ElementTransformUtils.RotateElement(doc, ceiling.Id, rotationAxis, -rotationAngle);
+                            if (!AreApproximatelyEqual(Math.Abs(rotationAngle) % (90 * Math.PI / 180), 0) && !AreApproximatelyEqual(Math.Abs(rotationAngle) % (90 * Math.PI / 180), (90 * Math.PI / 180)))
+                            {
+                                ElementTransformUtils.RotateElement(doc, ceiling.Id, rotationAxis, -rotationAngle);
+                            }
                             t.Commit();
                         }
                     }
@@ -106,7 +103,7 @@ namespace EfficiencyPack
             }
             return Result.Succeeded;
         }
-        public (Line, double) RotateCeilingAroundCenterPoint(Document doc, Ceiling ceiling)
+        public (Line, double) RotateCeilingAroundCenterPoint(Autodesk.Revit.DB.Document doc, Ceiling ceiling)
         {
             Reference BottomFaceRef = HostObjectUtils.GetBottomFaces(ceiling as HostObject).FirstOrDefault();
             // Get the bottom face of the ceiling
@@ -116,24 +113,93 @@ namespace EfficiencyPack
             Edge E = EA.get_Item(0);
             Curve curve = E.AsCurve();
             Line line = curve as Line;
-            ReferencePlane edgePlane = doc.Create.NewReferencePlane(line.GetEndPoint(0), line.GetEndPoint(1), XYZ.BasisZ, doc.ActiveView);
 
             // Compute the center point of the ceiling
             XYZ centerPoint = GetFaceCenter(bottomFace);
-
             // Create a point 10 units along the X-axis from the center point
             XYZ pointXPlus10 = new XYZ(centerPoint.X + 10, centerPoint.Y, centerPoint.Z);
-            // Create the reference plane
-            ReferencePlane referencePlane = doc.Create.NewReferencePlane(centerPoint, pointXPlus10, XYZ.BasisZ, doc.ActiveView);
-
+            ReferencePlane edgePlane = null;
+            ReferencePlane referencePlane = null;
+            using (Transaction t = new Transaction(doc, "rotate ceiling"))
+            {
+                t.Start();
+                edgePlane = doc.Create.NewReferencePlane(line.GetEndPoint(0), line.GetEndPoint(1), XYZ.BasisZ, doc.ActiveView);
+                referencePlane = doc.Create.NewReferencePlane(centerPoint, pointXPlus10, XYZ.BasisZ, doc.ActiveView);
+                t.Commit();
+            }
             // Calculate the rotation angle to align the ceiling parallel with the reference plane
             Line rotationAxis = Line.CreateBound(centerPoint, new XYZ(centerPoint.X, centerPoint.Y, centerPoint.Z + 10));
             double rotationAngle = CalculateRotationAngle(edgePlane, referencePlane);
             // Rotate the ceiling around the center point
-            ElementTransformUtils.RotateElement(doc, ceiling.Id, rotationAxis, rotationAngle);
-            doc.Delete(referencePlane.Id);
-            doc.Delete(edgePlane.Id);
+            if (!AreApproximatelyEqual(Math.Abs(rotationAngle) % (90 * Math.PI / 180), 0) && !AreApproximatelyEqual(Math.Abs(rotationAngle) % (90 * Math.PI / 180), (90 * Math.PI / 180)))
+            {
+                RecreateCeilingSketchLines(doc, ceiling);
+                using (Transaction t = new Transaction(doc, "rotate ceiling"))
+                {
+                    t.Start();
+                    ElementTransformUtils.RotateElement(doc, ceiling.Id, rotationAxis, rotationAngle);
+                    t.Commit();
+                }
+            }
+            using (Transaction t = new Transaction(doc, "rotate ceiling"))
+            {
+                t.Start();
+                doc.Delete(referencePlane.Id);
+                doc.Delete(edgePlane.Id);
+                t.Commit();
+            }
             return (rotationAxis, rotationAngle);
+        }
+        public void RecreateCeilingSketchLines(Document doc, Ceiling ceiling)
+        {
+            if (ceiling == null)
+            {
+                TaskDialog.Show("Error", "No ceiling provided.");
+                return;
+            }
+
+            Sketch sketch = doc.GetElement(ceiling.SketchId) as Sketch;
+            if (sketch == null)
+            {
+                TaskDialog.Show("Error", "Ceiling does not have a valid sketch.");
+                return;
+            }
+
+            // Start a sketch edit scope
+            SketchEditScope sketchEditScope = new SketchEditScope(doc, "Recreate ceiling sketch lines");
+            sketchEditScope.Start(sketch.Id);
+
+            using (Transaction transaction = new Transaction(doc, "Recreate ceiling sketch lines"))
+            {
+                transaction.Start();
+
+                try
+                {
+                    foreach (CurveArray curveArray in sketch.Profile)
+                    {
+                        foreach (Curve curve in curveArray)
+                        {
+                            // Store the original curve geometry
+                            Curve originalCurve = curve.Clone();
+
+                            // Remove the old curve
+                            doc.Delete(curve.Reference.ElementId);
+
+                            // Create a new model curve in the same location
+                            doc.Create.NewModelCurve(originalCurve, sketch.SketchPlane);
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.RollBack();
+                    TaskDialog.Show("Error", "Failed to recreate ceiling sketch lines: " + ex.Message);
+                }
+            }
+
+            sketchEditScope.Commit(new RoomWarningSwallower());
         }
         private XYZ GetFaceCenter(Face face)
         {
@@ -149,7 +215,7 @@ namespace EfficiencyPack
 
             return edgePlaneNormal.AngleTo(refPlaneNormal);
         }
-        public double GridOffset(bool Item6, bool Item7, CeilingRef ceilingRef)
+        public double TileOffset(bool Item6, bool Item7, CeilingRef ceilingRef)
         {
             double offset = 0;
             if (!Item7)
@@ -207,7 +273,7 @@ namespace EfficiencyPack
             }
             return offset;
         }
-        public double GridOffsetCenter(bool Item6, bool Item7, CeilingRef ceilingRef, bool gridOrTile)
+        public double GridOffset(bool Item6, bool Item7, CeilingRef ceilingRef, bool Tile)
         {
             double offset = 0;
             if (!Item7)
@@ -215,7 +281,7 @@ namespace EfficiencyPack
                 if (Item6)
                 {
                     offset = (ceilingRef.ceilingLength / 2) % 4;
-                    if (gridOrTile)
+                    if (!Tile)
                     {
                         offset = (offset + 2) % 4;
                     }
@@ -223,9 +289,13 @@ namespace EfficiencyPack
                 else
                 {
                     offset = (ceilingRef.ceilingLength / 2) % 2;
-                    if (gridOrTile)
+                    if (!Tile)
                     {
                         offset = (offset + 1) % 2;
+                        if (AreApproximatelyEqual(offset, 0))
+                        {
+                            offset = 2;
+                        }
                     }
                 }
             }
@@ -234,7 +304,7 @@ namespace EfficiencyPack
                 if (Item6)
                 {
                     offset = (ceilingRef.ceilingWidth / 2) % 4;
-                    if (gridOrTile)
+                    if (!Tile)
                     {
                         offset = (offset + 2) % 4;
                     }
@@ -242,15 +312,19 @@ namespace EfficiencyPack
                 else
                 {
                     offset = (ceilingRef.ceilingWidth / 2) % 2;
-                    if (gridOrTile)
+                    if (!Tile)
                     {
                         offset = (offset + 1) % 2;
+                        if (AreApproximatelyEqual(offset, 0))
+                        {
+                            offset = 2;
+                        }
                     }
                 }
             }
             return offset;
         }
-        public void getCeilings(Document doc, List<Element> ceilings, UIDocument uidoc)
+        public void getCeilings(Autodesk.Revit.DB.Document doc, List<Element> ceilings, UIDocument uidoc)
         {
             // Get pre-selected elements
             ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
@@ -274,7 +348,7 @@ namespace EfficiencyPack
                 return;
             }
         }
-        public void AddDimensionsToCeiling(Document doc, Ceiling ceiling, CeilingRef ceilingRef, List<double> offsets)
+        public void AddDimensionsToCeiling(Autodesk.Revit.DB.Document doc, Ceiling ceiling, CeilingRef ceilingRef, List<double> offsets)
         {
             List<Element> HostedElements = GetHostedElements(doc, ceiling as Element);
             TranslateSelectedElements(doc, HostedElements, ceilingRef.ceilingLength);
@@ -339,7 +413,7 @@ namespace EfficiencyPack
             }
             TranslateSelectedElements(doc, HostedElements, -ceilingRef.ceilingLength);
         }
-        public List<Element> GetHostedElements(Document doc, Element hostElement)
+        public List<Element> GetHostedElements(Autodesk.Revit.DB.Document doc, Element hostElement)
         {
             List<Element> hostedElements = new List<Element>();
 
@@ -362,7 +436,7 @@ namespace EfficiencyPack
 
             return hostedElements;
         }
-        public void TranslateSelectedElements(Document document, List<Element> selectedElements, double distanceZ)
+        public void TranslateSelectedElements(Autodesk.Revit.DB.Document document, List<Element> selectedElements, double distanceZ)
         {
 
             if (selectedElements.Count == 0)
@@ -459,7 +533,7 @@ namespace EfficiencyPack
 
             return list.Skip(list.Count - shiftBy).Concat(list.Take(list.Count - shiftBy)).ToList();
         }
-        public List<Curve> OffsetCeilingSketchLines(Document doc, CeilingRef ceilingRef, double offset)
+        public List<Curve> OffsetCeilingSketchLines(Autodesk.Revit.DB.Document doc, CeilingRef ceilingRef, double offset)
         {
             List<Curve> offsetCurves = new List<Curve>();
 
@@ -490,7 +564,7 @@ namespace EfficiencyPack
 
             return offsetCurves;
         }
-        public List<Curve> CreateDetailLinesFromCeiling(Document doc, CeilingRef ceilingRef, double offset2)
+        public List<Curve> CreateDetailLinesFromCeiling(Autodesk.Revit.DB.Document doc, CeilingRef ceilingRef, double offset2)
         {
 
             ReferenceArray referenceArray = new ReferenceArray();
@@ -548,7 +622,7 @@ namespace EfficiencyPack
             }
             //check for model surfacepattern
             List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>> res = new List<Tuple<int, Reference, XYZ, XYZ, ReferenceArray, bool, bool>>();
-            Document doc = elem.Document;
+            Autodesk.Revit.DB.Document doc = elem.Document;
             View activeView = doc.ActiveView;
             PlanarFace face = elem.GetGeometryObjectFromReference(hatchface) as PlanarFace;
             Material mat = doc.GetElement(face.MaterialElementId) as Material;
@@ -617,7 +691,7 @@ namespace EfficiencyPack
             }
             return res;
         }
-        public double DimHeight(Document doc, Ceiling elem)
+        public double DimHeight(Autodesk.Revit.DB.Document doc, Ceiling elem)
         {
             double height = elem.get_Parameter(BuiltInParameter.CEILING_HEIGHTABOVELEVEL_PARAM).AsDouble();
             Level level = doc.GetElement(elem.LevelId) as Level;
@@ -666,11 +740,11 @@ namespace EfficiencyPack
         public string type { get; private set; }
         public XYZ centerPoint { get; private set; }
         public bool dir { get; private set; }
-        public CeilingRef(Document doc, Ceiling ceiling)
+        public CeilingRef(Autodesk.Revit.DB.Document doc, Ceiling ceiling)
         {
             InitializeCeilingRef(doc, ceiling);
         }
-        private void InitializeCeilingRef(Document doc, Ceiling ceiling)
+        private void InitializeCeilingRef(Autodesk.Revit.DB.Document doc, Ceiling ceiling)
         {
             HostObject = ceiling as HostObject;
             if (HostObject == null)
@@ -750,5 +824,26 @@ namespace EfficiencyPack
             StableRef = BottomFaceRef.ConvertToStableRepresentation(doc);
         }
 
+    }
+    public class RoomWarningSwallower : IFailuresPreprocessor
+    {
+        public FailureProcessingResult PreprocessFailures(FailuresAccessor failuresAccessor)
+        {
+            IList<FailureMessageAccessor> failList = new List<FailureMessageAccessor>();
+            // Inside event handler, get all warnings
+            failList = failuresAccessor.GetFailureMessages();
+            foreach (FailureMessageAccessor failure in failList)
+            {
+                // check FailureDefinitionIds against ones that you want to dismiss, 
+                FailureDefinitionId failID = failure.GetFailureDefinitionId();
+                // prevent Revit from showing Unenclosed room warnings
+                if (failID == BuiltInFailures.SketchFailures.InvalidSketch)
+                {
+                    failuresAccessor.DeleteWarning(failure);
+                }
+            }
+
+            return FailureProcessingResult.Continue;
+        }
     }
 }

@@ -59,9 +59,10 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 9);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(302, 13);
+            this.label3.Size = new System.Drawing.Size(379, 13);
             this.label3.TabIndex = 19;
-            this.label3.Text = "Do you want to align a grid with the center line or outer edges?";
+            this.label3.Text = "By default, a tile will be centered. Do you want to align a grid line to the cent" +
+    "er?";
             this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // FrmCenterCeilingGrid
