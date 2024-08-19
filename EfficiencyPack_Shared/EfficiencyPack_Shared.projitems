@@ -11,6 +11,9 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CenterCeilingGrid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DoorSwing.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WallsByRoom.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HelpApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Confetti.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DimensionText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExplodeCAD.cs" />

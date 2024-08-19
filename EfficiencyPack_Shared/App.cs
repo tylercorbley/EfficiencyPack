@@ -78,31 +78,37 @@ namespace EfficiencyPack
 #endif
             ButtonDataClass BtnAlignViewsOnSheets = new ButtonDataClass("AlignViewsOnSheets", "Align Views\rOn Sheets", AlignViewsOnSheets.GetMethod(), IconSelector.SelectIcon(dark, "center_32"), IconSelector.SelectIcon(dark, "center_16"), "Aligns views across sheets. Select original view, active the tool, then select what you want aligned to the original");
             ButtonDataClass BtnConfetti = new ButtonDataClass("Deadline", "Deadline", Confetti.GetMethod(), IconSelector.SelectIcon(dark, "cracker_32"), IconSelector.SelectIcon(dark, "cracker_16"), "Push after deadline");
+            ButtonDataClass BtnHelpApp = new ButtonDataClass("Help", "Help", HelpApp.GetMethod(), IconSelector.SelectIcon(dark, "question_32"), IconSelector.SelectIcon(dark, "question_16"), "Push for tool guide");
+            ButtonDataClass BtnWallByRoom = new ButtonDataClass("WallsByRoom", "Walls by \rRooms", WallsByRoom.GetMethod(), IconSelector.SelectIcon(dark, "floor_32"), IconSelector.SelectIcon(dark, "floor_16"), "Select rooms. Run command and follow prompt to select type of Wals to populate.");
+            ButtonDataClass BtnDoorSwing = new ButtonDataClass("DoorSwing", "Auto Update\rDoor Swing", DoorSwing.GetMethod(), IconSelector.SelectIcon(dark, "door_32"), IconSelector.SelectIcon(dark, "door_16"), "Turn this on to auto update doors as you place them.");
 
 
 
             // 4. Create buttons
-            PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
-            PushButton myButton1 = panel000.AddItem(BtnForestGen.Data) as PushButton;
+            PushButton myButton20 = panel000.AddItem(BtnHelpApp.Data) as PushButton;
+            //PushButton myButton13 = panel000.AddItem(BtnWorkingViews.Data) as PushButton;
+            // PushButton myButton1 = panel000.AddItem(BtnForestGen.Data) as PushButton;
 #if REVIT2022
             PushButton myButton3 = panel000.AddItem(BtnDuplicateSheet.Data) as PushButton;
 #endif
-            PushButton labelOffsetButton = panel000.AddItem(BtnLabelOffset.Data) as PushButton;
-            PushButton myButton4 = panel000.AddItem(BtnFloorByDepartment.Data) as PushButton;
-            PushButton myButton5 = panel000.AddItem(BtnLinesByRoom.Data) as PushButton;
-            PushButton myButton9 = panel000.AddItem(BtnRenameView.Data) as PushButton;
+            //PushButton labelOffsetButton = panel000.AddItem(BtnLabelOffset.Data) as PushButton;
+            //PushButton myButton18 = panel000.AddItem(BtnAlignViewsOnSheets.Data) as PushButton;
+            //PushButton myButton4 = panel000.AddItem(BtnFloorByDepartment.Data) as PushButton;
+            //PushButton myButton9 = panel000.AddItem(BtnRenameView.Data) as PushButton;
             PushButton myButton11 = panel000.AddItem(BtnSetTypeImageCommand.Data) as PushButton;
+            PushButton myButton16 = panel000.AddItem(BtnExplodeCAD.Data) as PushButton;
+            PushButton myButton5 = panel000.AddItem(BtnLinesByRoom.Data) as PushButton;
+            PushButton myButton19 = panel100.AddItem(BtnCenterCeilingGrid.Data) as PushButton;
             PushButton mybutton12 = panel600.AddItem(BtnStorefrontElevation.Data) as PushButton;
             PushButton myButton6 = panel800.AddItem(BtnRoomPlanGen.Data) as PushButton;
-            PushButton myButton2 = panel900.AddItem(BtnFloorByRoom.Data) as PushButton;
             PushButton myButton10 = panel800.AddItem(BtnInteriorElevation.Data) as PushButton;
             PushButton myButton14 = panel800.AddItem(BtnDimensionOverride.Data) as PushButton;
-            PushButton myButton16 = panel000.AddItem(BtnExplodeCAD.Data) as PushButton;
+            PushButton myButton21 = panel600.AddItem(BtnDoorSwing.Data) as PushButton;
+            //PushButton myButton2 = panel900.AddItem(BtnFloorByRoom.Data) as PushButton;
 #if REVIT2023|| REVIT2024
             PushButton myButton17 = panel000.AddItem(BtnGoogleEarthTopo.Data) as PushButton;
 #endif
-            PushButton myButton18 = panel000.AddItem(BtnAlignViewsOnSheets.Data) as PushButton;
-            PushButton myButton19 = panel100.AddItem(BtnCenterCeilingGrid.Data) as PushButton;
+
             //5. Split buttons
             SplitButtonData splitButtonData = new SplitButtonData("Center Room", "Center\rRoom");
             SplitButton splitButton = panel000.AddItem(splitButtonData) as SplitButton;
@@ -117,6 +123,20 @@ namespace EfficiencyPack
             splitButton2.AddPushButton(BtnDoorFireRating.Data);
             splitButton2.AddPushButton(BtnDoorCMUGWB.Data);
             splitButton2.AddPushButton(BtnDoorStorefrontMark.Data);
+            SplitButtonData splitButtonData4 = new SplitButtonData("Finishes", "Finishes");
+            SplitButton splitButton4 = panel900.AddItem(splitButtonData4) as SplitButton;
+            splitButton4.AddPushButton(BtnFloorByRoom.Data);
+            splitButton4.AddPushButton(BtnWallByRoom.Data);
+            //SplitButtonData splitButtonData4 = new SplitButtonData("Early Design", "Early\rDesign");
+            //SplitButton splitButton4 = panel000.AddItem(splitButtonData4) as SplitButton;
+            //splitButton4.AddPushButton(BtnForestGen.Data);
+            //splitButton4.AddPushButton(BtnFloorByDepartment.Data);
+            //splitButton4.AddPushButton(BtnWorkingViews.Data);
+            //SplitButtonData splitButtonData5 = new SplitButtonData("Sheet Management", "Sheet\rManagement");
+            //SplitButton splitButton5 = panel000.AddItem(splitButtonData5) as SplitButton;
+            //splitButton5.AddPushButton(BtnLabelOffset.Data);
+            //splitButton5.AddPushButton(BtnRenameView.Data);
+            //splitButton5.AddPushButton(BtnAlignViewsOnSheets.Data);
             //SplitButtonData splitButtonData4 = new SplitButtonData("Type Importers", "Import\rTypes");
             //SplitButton splitButton4 = panel000.AddItem(splitButtonData4) as SplitButton;
             //splitButton4.AddPushButton(BtnImportViewType.Data);
@@ -124,6 +144,8 @@ namespace EfficiencyPack
 
             //6. stack buttons
             panel000.AddStackedItems(BtnImportViewType.Data, BtnImportTypes.Data, BtnConfetti.Data);
+            panel000.AddStackedItems(BtnLabelOffset.Data, BtnRenameView.Data, BtnAlignViewsOnSheets.Data);
+            panel000.AddStackedItems(BtnForestGen.Data, BtnFloorByDepartment.Data, BtnWorkingViews.Data);
             //panel000.AddStackedItems(, null);
             return Result.Succeeded;
         }
@@ -132,7 +154,5 @@ namespace EfficiencyPack
         {
             return Result.Succeeded;
         }
-
-
     }
 }
