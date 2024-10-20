@@ -28,44 +28,94 @@ namespace EfficiencyPack
                 message = "Please select at least one elevation view.";
                 return Result.Failed;
             }
+            List<string> lineStyles = GetAllLineStyleNames(doc);
+            List<string> filledStyles = GetFilledRegionTypeNames(doc);
+            double offset = 1;
+            FrmDonut curForm = new FrmDonut(lineStyles, filledStyles);
+            curForm.Height = 200;
+            curForm.Width = 650;
+            curForm.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 
+            string lineStyleName = curForm.GetSelectedLineStyle();
+            string fillName = curForm.GetSelectedFillRegion();
 
-            ElementId lineStyle = GetLineStyleIdByName(doc, "5");
-            foreach (ElementId id in selectedIds)
+            if (curForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Element element = doc.GetElement(id);
-                if (element is Viewport viewport)
+                foreach (ElementId id in selectedIds)
                 {
-                    // Check if the viewport is placed on a sheet and has an associated elevation view
-                    ViewSheet sheet = doc.GetElement(viewport.SheetId) as ViewSheet;
-                    if (sheet != null && viewport.ViewId != ElementId.InvalidElementId)
+                    Element element = doc.GetElement(id);
+                    if (element is Viewport viewport)
                     {
-                        Element viewElement = doc.GetElement(viewport.ViewId);
-                        if (viewElement is View view && view.ViewType == ViewType.Elevation)
+                        // Check if the viewport is placed on a sheet and has an associated elevation view
+                        ViewSheet sheet = doc.GetElement(viewport.SheetId) as ViewSheet;
+                        if (sheet != null && viewport.ViewId != ElementId.InvalidElementId)
                         {
-                            // Create a filled region boundary loop
-                            IList<CurveLoop> boundaryLoops = new List<CurveLoop>();
-                            XYZ viewNormal = view.ViewDirection;
-                            ElementId filledRegionType = GetFilledRegionTypeByName(doc, "Solid Fill - White (D)");
-                            CurveLoop CropBoxBoundary = GetCropBoxBoundary(view);
-                            boundaryLoops.Add(CropBoxBoundary);
-                            CurveLoop CenteredBoxCurveOffset = CurveLoop.CreateViaOffset(CropBoxBoundary, .5, viewNormal);
-                            boundaryLoops.Add(CenteredBoxCurveOffset);
-                            // Start a new transaction
-                            using (Transaction trans = new Transaction(doc, "Place Filled Region"))
+                            Element viewElement = doc.GetElement(viewport.ViewId);
+                            if (viewElement is View view && view.ViewType == ViewType.Elevation)
                             {
-                                trans.Start();
 
-                                // Create a new filled region
-                                FilledRegion filledRegion = FilledRegion.Create(doc, filledRegionType, view.Id, boundaryLoops);
-                                filledRegion.SetLineStyleId(lineStyle);
-                                trans.Commit();
+                                ElementId lineStyle = GetLineStyleIdByName(doc, lineStyleName);
+                                ElementId filledRegionType = GetFilledRegionTypeByName(doc, fillName);
+                                offset = curForm.getOffset();
+                                // Create a filled region boundary loop
+                                IList<CurveLoop> boundaryLoops = new List<CurveLoop>();
+                                XYZ viewNormal = view.ViewDirection;
+                                CurveLoop CropBoxBoundary = GetCropBoxBoundary(view);
+                                boundaryLoops.Add(CropBoxBoundary);
+                                CurveLoop CenteredBoxCurveOffset2 = CurveLoop.CreateViaOffset(CropBoxBoundary, offset, viewNormal);
+                                boundaryLoops.Add(CenteredBoxCurveOffset2);
+                                // Start a new transaction
+                                using (Transaction trans = new Transaction(doc, "Place Filled Region"))
+                                {
+                                    trans.Start();
+
+                                    // Create a new filled region
+                                    FilledRegion filledRegion = FilledRegion.Create(doc, filledRegionType, view.Id, boundaryLoops);
+                                    filledRegion.SetLineStyleId(lineStyle);
+                                    trans.Commit();
+                                }
                             }
                         }
                     }
                 }
             }
             return Result.Succeeded;
+        }
+        public static List<string> GetFilledRegionTypeNames(Document doc)
+        {
+            // Create a collector to gather all FilledRegionTypes in the project
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            ICollection<Element> filledRegionTypes = collector
+                .OfClass(typeof(FilledRegionType))
+                .ToElements();
+
+            // Extract the names of the filled region types
+            List<string> filledRegionTypeNames = filledRegionTypes
+                .Cast<FilledRegionType>()
+                .Select(frt => frt.Name)
+                .ToList();
+
+            return filledRegionTypeNames;
+        }
+        private List<string> GetAllLineStyleNames(Autodesk.Revit.DB.Document doc)
+        {
+            List<string> results = new List<string>();
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.OfClass(typeof(GraphicsStyle));
+
+            Category linesCategory = Category.GetCategory(doc, BuiltInCategory.OST_Lines);
+
+            foreach (GraphicsStyle style in collector)
+            {
+                Category category = style.GraphicsStyleCategory;
+                if (category != null && category.Parent != null && category.Parent.Id == linesCategory.Id)
+                {
+                    results.Add(style.Name);
+                }
+            }
+
+            return results;
         }
         public ElementId GetLineStyleIdByName(Document doc, string lineStyleName)
         {

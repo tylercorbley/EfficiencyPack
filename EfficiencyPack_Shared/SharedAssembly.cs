@@ -1,9 +1,9 @@
 using System.Reflection;
 
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SchraderGroup")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EfficiencyPack Revit C# .NET Add-In")]
-[assembly: AssemblyCopyright("Copyright (C) 2023 by Tyler Corbley, SchraderGroup")]
+[assembly: AssemblyCopyright("Copyright (C) 2023 by Tyler Corbley")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

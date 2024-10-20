@@ -5,7 +5,7 @@
     <Assembly>EfficiencyPack_2023.dll</Assembly>
     <FullClassName>EfficiencyPack.App</FullClassName>
 	  <ClientId>48919A48-BC42-403C-B43F-62FBA9D6922E</ClientId>
-    <VendorId>com.sgarc</VendorId>
-    <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
+    <VendorId>tyler.rf.gd</VendorId>
+    <VendorDescription>tyler.rf.gd</VendorDescription>
   </AddIn>
 </RevitAddIns>

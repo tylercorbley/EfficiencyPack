@@ -24,9 +24,6 @@ namespace EfficiencyPack
                 UIDocument uiDoc = uiApp.ActiveUIDocument;
                 Autodesk.Revit.DB.Document doc = uiDoc.Document;
 
-                // Collect all the floor type names
-                List<string> floorTypeNames = CollectFloorTypeNames(doc);
-
                 // Get the selection of rooms in the Revit document
                 ICollection<ElementId> selectedIds = uiDoc.Selection.GetElementIds();
 
@@ -120,15 +117,6 @@ namespace EfficiencyPack
                 .FirstOrDefault(style => style.Name.Equals(lineStyleName));
 
             return graphicsStyle;
-        }
-        private List<string> CollectFloorTypeNames(Autodesk.Revit.DB.Document doc)
-        {
-            // Collect all the floor types in the document
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
-            collector.OfClass(typeof(FloorType));
-            List<string> floorTypeNames = collector.Cast<FloorType>().Select(ft => ft.Name).ToList();
-
-            return floorTypeNames;
         }
         private List<string> GetAllLineStyleNames(Autodesk.Revit.DB.Document doc)
         {

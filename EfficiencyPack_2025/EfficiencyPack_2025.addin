@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>EfficiencyPack_2025 - Command 1</Text>
+    <Description>Some description for EfficiencyPack_2025</Description>
+    <Assembly>EfficiencyPack_2025.dll</Assembly>
+    <FullClassName>EfficiencyPack_2025.Command1</FullClassName>
+    <ClientId>7d9b65b6-8be5-414f-8bb2-5ea3041710d1</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Text>EfficiencyPack_2025 - Command 2</Text>
+    <Description>Some description for EfficiencyPack_2025</Description>
+    <Assembly>EfficiencyPack_2025.dll</Assembly>
+    <FullClassName>EfficiencyPack_2025.Command2</FullClassName>
+    <ClientId>3802f10a-d046-4038-92fc-b05aa7c1f37e</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>EfficiencyPack_2025</Name>
+    <Assembly>EfficiencyPack_2025.dll</Assembly>
+    <FullClassName>EfficiencyPack_2025.App</FullClassName>
+    <ClientId>5de5753d-0a84-413d-bc64-c088bbc6bf20</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+</RevitAddIns>

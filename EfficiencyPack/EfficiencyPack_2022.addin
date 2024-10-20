@@ -6,15 +6,15 @@
 		<Assembly>EfficiencyPack_2022.dll</Assembly>
 		<FullClassName>EfficiencyPack.ToggleRoomTagLeader</FullClassName>
 		<ClientId>49AE01C5-727F-4434-AD13-E3A361D48906</ClientId>
-		<VendorId>com.sgarc</VendorId>
-		<VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
+		<VendorId>tyler.rf.gd</VendorId>
+		<VendorDescription>tyler.rf.gd</VendorDescription>
 	</AddIn>
   <AddIn Type="Application">
     <Name>EfficiencyPack_2022</Name>
     <Assembly>EfficiencyPack_2022.dll</Assembly>
     <FullClassName>EfficiencyPack.App</FullClassName>
     <ClientId>4ba7b194-ada0-4c40-9a08-9cd408126b33</ClientId>
-    <VendorId>com.sgarc</VendorId>
-    <VendorDescription>SchraderGroup, sgarc.com</VendorDescription>
+    <VendorId>tyler.rf.gd</VendorId>
+    <VendorDescription>tyler.rf.gd</VendorDescription>
   </AddIn>
 </RevitAddIns>

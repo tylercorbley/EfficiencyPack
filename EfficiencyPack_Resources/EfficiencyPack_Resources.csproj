@@ -107,6 +107,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrmDonut.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDonut.Designer.cs">
+      <DependentUpon>FrmDonut.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmWallRm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -175,6 +181,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FrmDonut.resx">
+      <DependentUpon>FrmDonut.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmWallRm.resx">
       <DependentUpon>FrmWallRm.cs</DependentUpon>
     </EmbeddedResource>

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfficiencyPack_2022", "EfficiencyPack\EfficiencyPack_2022.csproj", "{27C116F9-2985-4370-A5A1-C798AAE53410}"
-EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EfficiencyPackInstaller", "EfficiencyPackInstaller\EfficiencyPackInstaller.vdproj", "{7596584E-28D2-4843-A9DC-085021DA3531}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "EfficiencyPack", "EfficiencyPack_Shared\EfficiencyPack.shproj", "{60ECF21E-4E3D-4BB1-875C-38C8574055F8}"
@@ -17,16 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfficiencyPack_2023", "Effi
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonApplication1", "PythonApplication1\PythonApplication1.pyproj", "{354CB5E7-2834-4272-B11D-F57B900F0E2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfficiencyPack_2025", "EfficiencyPack_2025\EfficiencyPack_2025.csproj", "{7D9B65B6-8BE5-414F-8BB2-5EA3041710D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{27C116F9-2985-4370-A5A1-C798AAE53410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27C116F9-2985-4370-A5A1-C798AAE53410}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27C116F9-2985-4370-A5A1-C798AAE53410}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27C116F9-2985-4370-A5A1-C798AAE53410}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7596584E-28D2-4843-A9DC-085021DA3531}.Debug|Any CPU.ActiveCfg = Debug
 		{7596584E-28D2-4843-A9DC-085021DA3531}.Debug|Any CPU.Build.0 = Debug
 		{7596584E-28D2-4843-A9DC-085021DA3531}.Release|Any CPU.ActiveCfg = Release
@@ -44,6 +40,10 @@ Global
 		{B6ED6988-DBF0-4560-BF25-886CE60B4286}.Release|Any CPU.Build.0 = Release|Any CPU
 		{354CB5E7-2834-4272-B11D-F57B900F0E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{354CB5E7-2834-4272-B11D-F57B900F0E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D9B65B6-8BE5-414F-8BB2-5EA3041710D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D9B65B6-8BE5-414F-8BB2-5EA3041710D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D9B65B6-8BE5-414F-8BB2-5EA3041710D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D9B65B6-8BE5-414F-8BB2-5EA3041710D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,8 +52,8 @@ Global
 		SolutionGuid = {879DF85E-6272-48B3-A8DD-84984D72FE1B}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{27c116f9-2985-4370-a5a1-c798aae53410}*SharedItemsImports = 4
 		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{60ecf21e-4e3d-4bb1-875c-38c8574055f8}*SharedItemsImports = 13
+		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{7d9b65b6-8be5-414f-8bb2-5ea3041710d1}*SharedItemsImports = 4
 		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{b6ed6988-dbf0-4560-bf25-886ce60b4286}*SharedItemsImports = 4
 		EfficiencyPack_Shared\EfficiencyPack_Shared.projitems*{f0a7f46b-fb4e-44af-ae7f-1b29baa3abaf}*SharedItemsImports = 4
 	EndGlobalSection
